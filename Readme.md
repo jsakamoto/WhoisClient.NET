@@ -1,15 +1,18 @@
-# Project Description
+# WhoisClient.NET [![NuGet Package](https://img.shields.io/nuget/v/WhoisClient.NET.svg)](https://www.nuget.org/packages/WhoisClient.NET/)
+
+## Project Description
+
 This is .NET Class library implementing a WHOIS client.
 
-# How to install
+## How to install
 
 To install this library into your application, use the NuGet repository.
 
 ```
-PM> Install-Package WhoisClient.NET-VS2015
+PM> Install-Package WhoisClient.NET
 ```
 
-# Sample source code (C#)
+## Sample source code (C#)
 
 ```csharp
 using Whois.NET;
@@ -20,5 +23,3 @@ Console.WriteLine("{0} - {1}", result.AddressRange.Begin, result.AddressRange.En
 Console.WriteLine("{0}", result.OrganizationName); // "American Registry for Internet Numbers"
 Console.WriteLine(string.Join(" > ", result.RespondedServers)); // "whois.arin.net" 
 ```
-
-Make sure nuget.exe is in your path for building release.
