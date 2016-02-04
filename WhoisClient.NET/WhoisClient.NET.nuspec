@@ -1,49 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <package >
   <metadata>
-    <id>WhoisClient-VS2015</id>
-    <version>20160120.1</version>
-    <title>WhoisClient.NET-VS2015</title>
+    <id>$title$</id>
+    <version>$version$</version>
+    <title>$title$</title>
     <authors>J.Sakamoto, Keith J. Jones</authors>
     <owners>J.Sakamoto, Keith J. Jones</owners>
-    <copyright>Copyright 2012-2014 J.Sakamoto; Copyright Keith J. Jones, 2016, Ms-PL License.</copyright>
-    <licenseUrl>https://github.com/keithjjones/WhoisClient.NET/blob/master/License.md</licenseUrl>
-    <projectUrl>https://github.com/keithjjones/WhoisClient.NET/</projectUrl>
+    <copyright>Copyright 2012-2016 J.Sakamoto; Copyright Keith J. Jones, 2016, Ms-PL License.</copyright>
+    <licenseUrl>https://github.com/jsakamoto/WhoisClient.NET/blob/master/License.md</licenseUrl>
+    <projectUrl>https://github.com/jsakamoto/WhoisClient.NET/</projectUrl>
     <!--
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
     -->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-	  Fork of the WhoisClient.NET project for VS 2015.
-	  This library is a WHOIS protocol client used to search owner information by IP address or domain name.
-      This library determines the WHOIS server automatically and queries the referral server recursively.
-      The response of the whois query contains strongly typed values, and the raw output.
-    </description>
-	<summary>
-	  Fork of the WhoisClient.NET project for VS 2015.
       This library is a WHOIS protocol client used to search owner information by IP address or domain name.
       This library determines the WHOIS server automatically and queries the referral server recursively.
       The response of the whois query contains strongly typed values, and the raw output.
-	</summary>
+    </description>
+    <summary>
+      This library is a WHOIS protocol client used to search owner information by IP address or domain name.
+      This library determines the WHOIS server automatically and queries the referral server recursively.
+      The response of the whois query contains strongly typed values, and the raw output.
+    </summary>
     <releaseNotes>
-	
-		20160120.1	Created a maximum timeout for the network connections, reads, and writes.  
-					Added a maximum number of retries.  
-					Added this functionality to help with bad network connections.
-		20160119.2	Edited assembly information.
-		20160119.1	Added IntelliSense information.
-		20160118.6	Changed link to license.
-		20160118.5	Fixed problem with default constructor for WhoisResponse.
-		20160118.4	Relaxed more member protections.
-		20160118.3	Relaxed member protections.
-		20160118.2	Added default constructor for WhoisResponse.
-		20160118.1	Moved all queries to start with IANA.  Improved lookup algorithm.
-		20160115.4	Fixed an issue detecting an organization name.
-		20160115.3	Fixed an issue with an ARIN IP address whois.
-		20160115.2	Changed package metadata.
-		20160115.1	Many bug fixes and enhancements.
-		ver.1.0.2 - Fix bug with port number referral server response.
-		ver.1.0.1 - Single out one record when querying domain.
+      <![CDATA[
+      ver.1.1.0
+      Backport from the improvements of WhoisClient.NET-VS2015 by Keith J. Jones.
+      - Created a maximum timeout for the network connections, reads, and writes.
+      - Added a maximum number of retries.
+      - Added this functionality to help with bad network connections.
+      - Added IntelliSense information.
+      - Fixed problem with default constructor for WhoisResponse.
+      - Relaxed member protections.
+      - Added default constructor for WhoisResponse.
+      - Moved all queries to start with IANA.  Improved lookup algorithm.
+      - Fixed an issue detecting an organization name.
+      - Fixed an issue with an ARIN IP address whois.
+      - Many bug fixes and enhancements.
+      ver.1.0.2
+      - Fix bug with port number referral server response.
+      ver.1.0.1
+      - Single out one record when querying domain.
+    ]]>
     </releaseNotes>
     <tags>whois</tags>
   </metadata>
