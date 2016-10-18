@@ -43,7 +43,7 @@ namespace WhoisClient_NET.Test
         public void WhoisClientIP5Test()
         {
             WhoisResponse response = WhoisClient.Query("31.116.94.96");
-            Assert.AreEqual("EE Limited", response.OrganizationName);
+            Assert.AreEqual("EE route", response.OrganizationName);
             Assert.AreEqual("31.64.0.0-31.127.255.255", response.AddressRange.ToString());
         }
 

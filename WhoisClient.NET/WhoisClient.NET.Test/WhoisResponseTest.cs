@@ -115,5 +115,12 @@ namespace WhoisClient_NET.Test
             new WhoisResponse(null, ResponseEN2)
                 .OrganizationName.Is("Asia Pacific Network Information Centre");
         }
+
+        [TestMethod]
+        public void RespondedServersTest()
+        {
+            WhoisResponse WR = WhoisClient.Query("150.126.0.0");
+            Assert.AreEqual(3, WR.RespondedServers.Length);
+        }
     }
 }
