@@ -158,7 +158,11 @@ namespace Whois.NET
                 return await QueryRecursiveAsync(query, servers, port, encoding, timeout, retries, token).ConfigureAwait(false);
             }
             else
+#if NETFX_40
+                return new WhoisResponse(servers.ToArray(), rawResponse);
+#else
                 return await Task.FromResult(new WhoisResponse(servers.ToArray(), rawResponse)).ConfigureAwait(false);
+#endif
         }
 
         /// <summary>
@@ -285,7 +289,11 @@ namespace Whois.NET
             }
             catch (SocketException)
             {
+#if NETFX_40
+                return string.Empty;
+#else
                 return await Task.FromResult(string.Empty).ConfigureAwait(false);
+#endif
             }
 
             try
@@ -306,7 +314,11 @@ namespace Whois.NET
             }
 
             // Return an empty string for now.
+#if NETFX_40
+            return string.Empty;
+#else
             return await Task.FromResult(string.Empty).ConfigureAwait(false);
+#endif
         }
     }
 }
