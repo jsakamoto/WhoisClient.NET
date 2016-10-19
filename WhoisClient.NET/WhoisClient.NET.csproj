@@ -57,17 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="WhoisClient.NET.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)" == "Release" goto PACK
-goto END
-:PACK
-pushd "$(ProjectDir)"
-md "$(SolutionDir)nuget"
-"$(SolutionDir).nuget\nuget.exe" pack "$(ProjectFileName)" -Prop Configuration=Release;Platform=AnyCPU  -o "$(SolutionDir)nuget"
-:END</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

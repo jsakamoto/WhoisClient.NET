@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.Test", "Who
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET40", "WhoisClient.NET40\WhoisClient.NET40.csproj", "{1CCA075F-FBE0-4974-9248-04FC8E8590C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildNuGetPackage", "BuildNuGetPackage\BuildNuGetPackage.csproj", "{4EDD33CB-007A-4BBD-B163-676E1F1A671D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9C98212B-41D1-4160-AFD3-31D6E314EF7A} = {9C98212B-41D1-4160-AFD3-31D6E314EF7A}
+		{1CCA075F-FBE0-4974-9248-04FC8E8590C0} = {1CCA075F-FBE0-4974-9248-04FC8E8590C0}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,9 @@ Global
 		{1CCA075F-FBE0-4974-9248-04FC8E8590C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CCA075F-FBE0-4974-9248-04FC8E8590C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CCA075F-FBE0-4974-9248-04FC8E8590C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EDD33CB-007A-4BBD-B163-676E1F1A671D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EDD33CB-007A-4BBD-B163-676E1F1A671D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EDD33CB-007A-4BBD-B163-676E1F1A671D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
