@@ -25,6 +25,9 @@
     </summary>
     <releaseNotes>
       <![CDATA[
+      ver.1.1.1
+      Backport from bugfix 04939d461c628c574976ef4a686bcde9c298e2c0 of WhoisClient.NET-VS2015 by Keith J. Jones.
+      - Squashed a minor bug with responded servers output.
       ver.1.1.0
       Backport from the improvements of WhoisClient.NET-VS2015 by Keith J. Jones.
       - Created a maximum timeout for the network connections, reads, and writes.
