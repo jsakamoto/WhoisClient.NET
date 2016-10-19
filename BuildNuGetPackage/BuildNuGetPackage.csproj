@@ -41,8 +41,14 @@
 goto END
 :PACK
 pushd "$(ProjectDir)"
+
+"%25SystemRoot%25\system32\find" "AssemblyVersion" &lt; ..\WhoisClient.NET\Properties\AssemblyInfo.cs &gt; ~version.txt
+set /p ver= &lt; ~version.txt
+del ~version.txt
+
 md "$(SolutionDir)nuget"
-"$(SolutionDir).nuget\nuget.exe" pack "WhoisClient.NET.nuspec" -o "$(SolutionDir)nuget" -Version 2.0.0.0
+"$(SolutionDir).nuget\nuget.exe" pack "WhoisClient.NET.nuspec" -o "$(SolutionDir)nuget" -Version %25ver:~28,-3%25
+
 :END</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
