@@ -14,12 +14,32 @@ PM> Install-Package WhoisClient.NET
 
 ## Sample source code (C#)
 
+### Async version
+
 ```csharp
 using Whois.NET;
 ...
-var result = WhoisClient.Query("192.41.192.40");
+private async Task DoIt()
+{
+  var result = await WhoisClient.QueryAsync("8.8.8.8");
+  
+  Console.WriteLine("{0} - {1}", result.AddressRange.Begin, result.AddressRange.End); // "8.8.8.0 - 8.8.8.255"
+  Console.WriteLine("{0}", result.OrganizationName); // "Google Inc. LVLT-GOGL-8-8-8 (NET-8-8-8-0-1)"
+  Console.WriteLine(string.Join(" > ", result.RespondedServers)); // "whois.iana.org > whois.arin.net" 
+}
+```
 
-Console.WriteLine("{0} - {1}", result.AddressRange.Begin, result.AddressRange.End); // "199.71.0.0 - 199.71.0.255"
-Console.WriteLine("{0}", result.OrganizationName); // "American Registry for Internet Numbers"
-Console.WriteLine(string.Join(" > ", result.RespondedServers)); // "whois.arin.net" 
+### Sync version
+
+```csharp
+using Whois.NET;
+...
+private void DoIt()
+{
+  var result = WhoisClient.Query("8.8.8.8");
+  
+  Console.WriteLine("{0} - {1}", result.AddressRange.Begin, result.AddressRange.End); // "8.8.8.0 - 8.8.8.255"
+  Console.WriteLine("{0}", result.OrganizationName); // "Google Inc. LVLT-GOGL-8-8-8 (NET-8-8-8-0-1)"
+  Console.WriteLine(string.Join(" > ", result.RespondedServers)); // "whois.iana.org > whois.arin.net" 
+}
 ```
