@@ -17,6 +17,10 @@
       This library is a WHOIS protocol client used to search owner information by IP address or domain name.
       This library determines the WHOIS server automatically and queries the referral server recursively.
       The response of the whois query contains strongly typed values, and the raw output.
+
+      [Notice]
+      `WhoisClient.NET` ver.2.x support "async" version methods for also .NET Framework 4.0 with powered by `Microsoft.Bcl.Async` NuGet package.
+      But if you don't want get dependencies for `Microsoft.Bcl.Async` and no need "async" version method, you can stay using v.1.x.
     </description>
     <summary>
       This library is a WHOIS protocol client used to search owner information by IP address or domain name.
