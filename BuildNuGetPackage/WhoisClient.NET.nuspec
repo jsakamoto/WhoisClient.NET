@@ -52,11 +52,12 @@
     </releaseNotes>
     <tags>whois</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.0">
-        <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
-      </group>
-      <group>
+      <group targetFramework="net45">
         <dependency id="IPAddressRange" version="1.5.0" />
+      </group>
+      <group targetFramework="net40">
+        <dependency id="IPAddressRange" version="1.5.0" />
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
       </group>
     </dependencies>
   </metadata>
