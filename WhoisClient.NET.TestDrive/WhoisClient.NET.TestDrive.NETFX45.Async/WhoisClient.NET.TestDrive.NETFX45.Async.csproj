@@ -33,14 +33,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IPAddressRange, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IPAddressRange.1.5.0.0\lib\net40\IPAddressRange.dll</HintPath>
+      <HintPath>..\packages\IPAddressRange.1.5.0.0\lib\net40\IPAddressRange.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="WhoisClient, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\WhoisClient.NET.2.0.0\lib\net45\WhoisClient.dll</HintPath>
+      <HintPath>..\packages\WhoisClient.NET.2.0.0\lib\net45\WhoisClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

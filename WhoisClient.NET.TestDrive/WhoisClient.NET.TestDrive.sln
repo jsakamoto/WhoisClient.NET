@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX40", "WhoisClient.NET.TestDrive\WhoisClient.NET.TestDrive.NETFX40\WhoisClient.NET.TestDrive.NETFX40.csproj", "{F2D0D63B-32FD-467C-B811-E7E858695E23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX40", "WhoisClient.NET.TestDrive.NETFX40\WhoisClient.NET.TestDrive.NETFX40.csproj", "{F2D0D63B-32FD-467C-B811-E7E858695E23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX40.Async", "WhoisClient.NET.TestDrive\WhoisClient.NET.TestDrive.NETFX40.Async\WhoisClient.NET.TestDrive.NETFX40.Async.csproj", "{72BB6A92-093B-4D4B-8E44-B80763BE5E56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX40.Async", "WhoisClient.NET.TestDrive.NETFX40.Async\WhoisClient.NET.TestDrive.NETFX40.Async.csproj", "{72BB6A92-093B-4D4B-8E44-B80763BE5E56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX45.Async", "WhoisClient.NET.TestDrive\WhoisClient.NET.TestDrive.NETFX45.Async\WhoisClient.NET.TestDrive.NETFX45.Async.csproj", "{70C91DB0-2771-4D83-8CAA-29E4F326EBD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX45.Async", "WhoisClient.NET.TestDrive.NETFX45.Async\WhoisClient.NET.TestDrive.NETFX45.Async.csproj", "{70C91DB0-2771-4D83-8CAA-29E4F326EBD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
