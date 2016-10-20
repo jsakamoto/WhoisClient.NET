@@ -12,6 +12,16 @@ To install this library into your application, use the NuGet repository.
 PM> Install-Package WhoisClient.NET
 ```
 
+### *Note - for .NET Framework 4.0
+
+`WhoisClient.NET` ver.2.x support "async" version methods for also .NET Framework 4.0 with powered by `Microsoft.Bcl.Async` NuGet package.
+
+But if you don't want get dependencies for `Microsoft.Bcl.Async` and no need "async" version method, you can stay using v.1.x by like the follow install command.
+
+```
+PM> Install-Package WhoisClient.NET -Version 1.1.1
+```
+
 ## Sample source code (C#)
 
 ### Async version
