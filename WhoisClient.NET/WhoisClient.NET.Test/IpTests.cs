@@ -36,7 +36,7 @@ namespace WhoisClient_NET.Test
         [TestCase(@"31.116.94.96", @"EE route", @"31.64.0.0-31.127.255.255")]
         public async Task WhoisClientAsyncTest()
         {
-            TestContext.Run(
+            await TestContext.RunAsync(
                 async (string ip, string expectedOrganizationName, string expectedAddressRange) =>
                 {
                     WhoisResponse response = await WhoisClient.QueryAsync(ip).ConfigureAwait(false);
