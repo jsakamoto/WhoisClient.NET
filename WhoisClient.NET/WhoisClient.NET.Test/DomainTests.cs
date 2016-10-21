@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whois.NET;
 
 namespace WhoisClient_NET.Test
@@ -33,9 +34,9 @@ namespace WhoisClient_NET.Test
 
         [TestMethod]
         [TestCase(@"google.com", @"Google, Inc.")]
-        public void WhoisClientAsyncTest()
+        public async Task WhoisClientAsyncTest()
         {
-            TestContext.Run(
+            await TestContext.RunAsync(
                 async (string domain, string expectedOrganizationName) =>
                     {
                         WhoisResponse response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
