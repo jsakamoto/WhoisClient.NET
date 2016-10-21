@@ -29,6 +29,8 @@
     </summary>
     <releaseNotes>
       <![CDATA[
+      ver.2.0.1
+      - Fix: missing XML document comment.
       ver.2.0.0
       - Add Async API
       - Support for .NET 4.5
