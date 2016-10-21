@@ -59,6 +59,7 @@ namespace Whois.NET
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
+        /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         public static async Task<WhoisResponse> QueryAsync(string query, string server = null, int port = 43,
             Encoding encoding = null, int timeout = 600, int retries = 10, CancellationToken token = default(CancellationToken))
@@ -127,6 +128,7 @@ namespace Whois.NET
         /// <param name="encoding">The encoding to use during the query.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
+        /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>A whois response structure containing the results of the whois queries.</returns>
         private static async Task<WhoisResponse> QueryRecursiveAsync(string query, List<string> servers, int port,
             Encoding encoding, int timeout = 600, int retries = 10, CancellationToken token = default(CancellationToken))
@@ -276,6 +278,7 @@ namespace Whois.NET
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.  Function returns empty string if it times out.</param>
+        /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         public static async Task<string> RawQueryAsync(string query, string server, int port = 43,
             Encoding encoding = null, int timeout = 600, CancellationToken token = default(CancellationToken))
