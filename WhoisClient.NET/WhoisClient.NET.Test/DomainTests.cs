@@ -33,7 +33,7 @@ namespace WhoisClient_NET.Test
         }
 
         [TestMethod]
-        [TestCase(@"google.com", @"Google, Inc.")]
+        [TestCase(@"google.com", @"Google Inc.")]
         public async Task WhoisClientAsyncTest()
         {
             await TestContext.RunAsync(
