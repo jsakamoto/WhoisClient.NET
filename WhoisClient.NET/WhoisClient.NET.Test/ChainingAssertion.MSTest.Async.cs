@@ -10,11 +10,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
     {
         private static Type GetTestClass(TestContext context)
         {
-            var type = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(asm => asm.GetTypes())
-                .First(t => t.FullName == context.FullyQualifiedTestClassName);
-            return type;
+            return Type.GetType(context.FullyQualifiedTestClassName, throwOnError: true);
         }
 
         private static IEnumerable<object[]> GetParameters(Type classType, string methodName)
