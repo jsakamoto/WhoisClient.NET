@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whois.NET;
 
@@ -24,24 +25,35 @@ namespace WhoisClient_NET.Test
         public void WhoisClientTest()
         {
             TestContext.Run(
-                (string domain, string expectedOrganizationName) =>
+                (string domain, string expectedOrgName) =>
                     {
-                        WhoisResponse response = WhoisClient.Query(domain);
-                        Assert.AreEqual(expectedOrganizationName, response.OrganizationName);
-                        Assert.IsNull(response.AddressRange);
+                        var response = WhoisClient.Query(domain);
+                        Console.WriteLine($"response.Raw is\r\n----------\r\n{response.Raw}\r\n--------");
+                        Console.WriteLine($"response.RespondedServers is [{string.Join(" > ", response.RespondedServers)}]");
+                        Console.WriteLine($"response.AddressRange is [{response.AddressRange}]");
+                        Console.WriteLine($"response.AddressRange is [{response.OrganizationName}]");
+
+                        response.OrganizationName.Is(expectedOrgName);
+                        response.AddressRange.IsNull();
                     });
         }
 
         [TestMethod]
+        [TestCase(@"facebook.com", @"Facebook, Inc.")]
         [TestCase(@"google.com", @"Google Inc.")]
         public async Task WhoisClientAsyncTest()
         {
             await TestContext.RunAsync(
-                async (string domain, string expectedOrganizationName) =>
+                async (string domain, string expectedOrgName) =>
                     {
-                        WhoisResponse response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
-                        Assert.AreEqual(expectedOrganizationName, response.OrganizationName);
-                        Assert.IsNull(response.AddressRange);
+                        var response = await WhoisClient.QueryAsync(domain);//.ConfigureAwait(false);
+                        Console.WriteLine($"response.Raw is\r\n----------\r\n{response.Raw}\r\n--------");
+                        Console.WriteLine($"response.RespondedServers is [{string.Join(" > ", response.RespondedServers)}]");
+                        Console.WriteLine($"response.AddressRange is [{response.AddressRange}]");
+                        Console.WriteLine($"response.AddressRange is [{response.OrganizationName}]");
+
+                        response.OrganizationName.Is(expectedOrgName);
+                        response.AddressRange.IsNull();
                     });
         }
     }
