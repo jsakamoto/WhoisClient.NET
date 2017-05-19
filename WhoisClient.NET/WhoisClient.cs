@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using NetTools;
+using System.Threading.Tasks;
 
 namespace Whois.NET
 {
-    using System.IO;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A WhoisClient structure for quering whois servers.
@@ -135,8 +134,8 @@ namespace Whois.NET
         {
             var server = servers.Last();
 
-            string rawResponse = string.Empty;
-            int iteration = 0;
+            var rawResponse = string.Empty;
+            var iteration = 0;
 
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
@@ -160,11 +159,7 @@ namespace Whois.NET
                 return await QueryRecursiveAsync(query, servers, port, encoding, timeout, retries, token).ConfigureAwait(false);
             }
             else
-#if NETFX_40
                 return new WhoisResponse(servers.ToArray(), rawResponse);
-#else
-                return await Task.FromResult(new WhoisResponse(servers.ToArray(), rawResponse)).ConfigureAwait(false);
-#endif
         }
 
         /// <summary>
@@ -301,11 +296,7 @@ namespace Whois.NET
             }
             catch (SocketException)
             {
-#if NETFX_40
                 return string.Empty;
-#else
-                return await Task.FromResult(string.Empty).ConfigureAwait(false);
-#endif
             }
 
             try
@@ -326,11 +317,7 @@ namespace Whois.NET
             }
 
             // Return an empty string for now.
-#if NETFX_40
             return string.Empty;
-#else
-            return await Task.FromResult(string.Empty).ConfigureAwait(false);
-#endif
         }
     }
 }
