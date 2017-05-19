@@ -294,8 +294,10 @@ namespace Whois.NET
             {
                 await tcpClient.ConnectAsync(server, port).ConfigureAwait(false);
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
+                Console.WriteLine("---- E-1 ----");
+                Console.WriteLine(e.ToString());
                 return string.Empty;
             }
 
@@ -312,8 +314,10 @@ namespace Whois.NET
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine("---- E-2 ----");
+                Console.WriteLine(e.ToString());
             }
 
             // Return an empty string for now.
