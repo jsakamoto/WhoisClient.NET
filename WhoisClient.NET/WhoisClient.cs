@@ -237,6 +237,7 @@ namespace Whois.NET
                 return string.Empty;
             }
 
+            var res = new StringBuilder();
             try
             {
                 using (var s = tcpClient.GetStream())
@@ -251,7 +252,6 @@ namespace Whois.NET
 
                     const int buffSize = 8192;
                     var readBuff = new byte[buffSize];
-                    var res = new StringBuilder();
                     var cbRead = default(int);
                     do
                     {
@@ -267,7 +267,7 @@ namespace Whois.NET
             {
                 tcpClient.Close();
                 Thread.Sleep(200);
-                return string.Empty;
+                return res.ToString();
             }
             finally
             {
@@ -303,6 +303,7 @@ namespace Whois.NET
                 return string.Empty;
             }
 
+            var res = new StringBuilder();
             try
             {
                 using (var s = tcpClient.GetStream())
@@ -317,7 +318,6 @@ namespace Whois.NET
 
                     const int buffSize = 8192;
                     var readBuff = new byte[buffSize];
-                    var res = new StringBuilder();
                     var cbRead = default(int);
                     do
                     {
@@ -335,7 +335,7 @@ namespace Whois.NET
                 await Task.Delay(200).ConfigureAwait(false);
                 Console.WriteLine("---- E-2 ----");
                 Console.WriteLine(e.ToString());
-                return string.Empty;
+                return res.ToString();
             }
             finally
             {
