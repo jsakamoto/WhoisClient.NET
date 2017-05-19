@@ -6,7 +6,7 @@
     <title>WhoisClient.NET</title>
     <authors>J.Sakamoto, Keith J. Jones</authors>
     <owners>J.Sakamoto, Keith J. Jones</owners>
-    <copyright>Copyright 2012-2016 J.Sakamoto; Copyright Keith J. Jones, 2016, Ms-PL License.</copyright>
+    <copyright>Copyright 2012-2017 J.Sakamoto; Copyright Keith J. Jones, 2016, Ms-PL License.</copyright>
     <licenseUrl>https://github.com/jsakamoto/WhoisClient.NET/blob/master/License.md</licenseUrl>
     <projectUrl>https://github.com/jsakamoto/WhoisClient.NET/</projectUrl>
     <!--
@@ -17,10 +17,6 @@
       This library is a WHOIS protocol client used to search owner information by IP address or domain name.
       This library determines the WHOIS server automatically and queries the referral server recursively.
       The response of the whois query contains strongly typed values, and the raw output.
-
-      [Notice]
-      `WhoisClient.NET` ver.2.x support "async" version methods for also .NET Framework 4.0 with powered by `Microsoft.Bcl.Async` NuGet package.
-      But if you don't want get dependencies for `Microsoft.Bcl.Async` and no need "async" version method, you can stay using v.1.x.
     </description>
     <summary>
       This library is a WHOIS protocol client used to search owner information by IP address or domain name.
@@ -29,6 +25,9 @@
     </summary>
     <releaseNotes>
       <![CDATA[
+      ver.3.0.0
+      - Enhance: .NET Core support.
+      - [BREAKING CHANGE] .NET 4.0 was no longer supported.
       ver.2.0.1
       - Fix: missing XML document comment.
       ver.2.0.0
@@ -58,19 +57,19 @@
     </releaseNotes>
     <tags>whois</tags>
     <dependencies>
-      <group targetFramework="net45">
-        <dependency id="IPAddressRange" version="1.5.0" />
+      <group targetFramework=".NETStandard1.4">
+        <dependency id="IPAddressRange" version="2.0.0-beta" />
+        <dependency id="NETStandard.Library" version="1.4.0" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework="net40">
-        <dependency id="IPAddressRange" version="1.5.0" />
-        <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
+      <group targetFramework="net45">
+        <dependency id="IPAddressRange" version="2.0.0-beta" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <file src="..\WhoisClient.NET\bin\Release\WhoisClient.dll" target="lib/net45" />
     <file src="..\WhoisClient.NET\bin\Release\WhoisClient.xml" target="lib/net45" />
-    <file src="..\WhoisClient.NET40\bin\Release\WhoisClient.dll" target="lib/net40" />
-    <file src="..\WhoisClient.NET40\bin\Release\WhoisClient.xml" target="lib/net40" />
+    <file src="..\WhoisClient.NET\bin\Release\WhoisClient.dll" target="lib/netstandard1.4" />
+    <file src="..\WhoisClient.NET\bin\Release\WhoisClient.xml" target="lib/netstandard1.4" />
   </files>
 </package>

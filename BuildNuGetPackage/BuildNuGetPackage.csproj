@@ -47,7 +47,7 @@ set /p ver= &lt; ~version.txt
 del ~version.txt
 
 md "$(SolutionDir)nuget"
-"$(SolutionDir).nuget\nuget.exe" pack "WhoisClient.NET.nuspec" -o "$(SolutionDir)nuget" -Version %25ver:~28,-3%25
+"$(SolutionDir).nuget\nuget.exe" pack "WhoisClient.NET.nuspec" -o "$(SolutionDir)nuget" -Version %25ver:~28,-3%25-beta
 
 :END</PostBuildEvent>
   </PropertyGroup>

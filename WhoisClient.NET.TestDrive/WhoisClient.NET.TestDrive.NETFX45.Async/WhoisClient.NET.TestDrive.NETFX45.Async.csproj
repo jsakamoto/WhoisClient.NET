@@ -32,16 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IPAddressRange, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IPAddressRange.1.5.0.0\lib\net40\IPAddressRange.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="IPAddressRange, Version=1.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IPAddressRange.1.6.2.7\lib\net40\IPAddressRange.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="WhoisClient, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WhoisClient.NET.2.0.0\lib\net45\WhoisClient.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="WhoisClient, Version=2.0.1.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WhoisClient.NET.2.0.1.1\lib\net45\WhoisClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

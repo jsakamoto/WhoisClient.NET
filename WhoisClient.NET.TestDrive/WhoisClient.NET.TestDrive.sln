@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX40", "WhoisClient.NET.TestDrive.NETFX40\WhoisClient.NET.TestDrive.NETFX40.csproj", "{F2D0D63B-32FD-467C-B811-E7E858695E23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX40.Async", "WhoisClient.NET.TestDrive.NETFX40.Async\WhoisClient.NET.TestDrive.NETFX40.Async.csproj", "{72BB6A92-093B-4D4B-8E44-B80763BE5E56}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETFX45.Async", "WhoisClient.NET.TestDrive.NETFX45.Async\WhoisClient.NET.TestDrive.NETFX45.Async.csproj", "{70C91DB0-2771-4D83-8CAA-29E4F326EBD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.TestDrive.NETCore", "WhoisClient.NET.TestDrive.NETCore\WhoisClient.NET.TestDrive.NETCore.csproj", "{F01BF72D-715F-4DC6-8E7E-6A3A709E7BBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{70C91DB0-2771-4D83-8CAA-29E4F326EBD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70C91DB0-2771-4D83-8CAA-29E4F326EBD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70C91DB0-2771-4D83-8CAA-29E4F326EBD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F01BF72D-715F-4DC6-8E7E-6A3A709E7BBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F01BF72D-715F-4DC6-8E7E-6A3A709E7BBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F01BF72D-715F-4DC6-8E7E-6A3A709E7BBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F01BF72D-715F-4DC6-8E7E-6A3A709E7BBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
