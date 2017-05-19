@@ -47,7 +47,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
                 await assertion(
                     (T1)parameters[0],
                     (T2)parameters[1]
-                    );
+                    ).ConfigureAwait(false);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting
                     (T1)parameters[0],
                     (T2)parameters[1],
                     (T3)parameters[2]
-                    );
+                    ).ConfigureAwait(false);
             }
         }
     }

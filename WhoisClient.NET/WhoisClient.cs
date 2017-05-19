@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace Whois.NET
 {
-
     /// <summary>
     /// A WhoisClient structure for quering whois servers.
     /// </summary>
@@ -233,7 +230,7 @@ namespace Whois.NET
 
             if (!success)
             {
-                // Return an empty string for now.
+                Thread.Sleep(200);
                 return string.Empty;
             }
 
@@ -296,10 +293,9 @@ namespace Whois.NET
             {
                 await tcpClient.ConnectAsync(server, port).ConfigureAwait(false);
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
-                Console.WriteLine("---- E-1 ----");
-                Console.WriteLine(e.ToString());
+                await Task.Delay(200).ConfigureAwait(false);
                 return string.Empty;
             }
 
@@ -329,12 +325,10 @@ namespace Whois.NET
                     return res.ToString();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 tcpClient.Close();
                 await Task.Delay(200).ConfigureAwait(false);
-                Console.WriteLine("---- E-2 ----");
-                Console.WriteLine(e.ToString());
                 return res.ToString();
             }
             finally

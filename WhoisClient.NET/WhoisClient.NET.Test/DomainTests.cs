@@ -24,37 +24,24 @@ namespace WhoisClient_NET.Test
         [TestCase(@"facebook.com", @"Facebook, Inc.")]
         public void WhoisClientTest()
         {
-            TestContext.Run(
-                (string domain, string expectedOrgName) =>
-                    {
-                        var response = WhoisClient.Query(domain);
-                        Console.WriteLine($"response.Raw is\r\n----------\r\n{response.Raw}\r\n--------");
-                        Console.WriteLine($"response.RespondedServers is [{string.Join(" > ", response.RespondedServers)}]");
-                        Console.WriteLine($"response.AddressRange is [{response.AddressRange}]");
-                        Console.WriteLine($"response.AddressRange is [{response.OrganizationName}]");
-
-                        response.OrganizationName.Is(expectedOrgName);
-                        response.AddressRange.IsNull();
-                    });
+            TestContext.Run((string domain, string expectedOrgName) =>
+            {
+                var response = WhoisClient.Query(domain);
+                response.OrganizationName.Is(expectedOrgName);
+                response.AddressRange.IsNull();
+            });
         }
 
         [TestMethod]
-        [TestCase(@"facebook.com", @"Facebook, Inc.")]
         [TestCase(@"google.com", @"Google Inc.")]
         public async Task WhoisClientAsyncTest()
         {
-            await TestContext.RunAsync(
-                async (string domain, string expectedOrgName) =>
-                    {
-                        var response = await WhoisClient.QueryAsync(domain);//.ConfigureAwait(false);
-                        Console.WriteLine($"response.Raw is\r\n----------\r\n{response.Raw}\r\n--------");
-                        Console.WriteLine($"response.RespondedServers is [{string.Join(" > ", response.RespondedServers)}]");
-                        Console.WriteLine($"response.AddressRange is [{response.AddressRange}]");
-                        Console.WriteLine($"response.AddressRange is [{response.OrganizationName}]");
-
-                        response.OrganizationName.Is(expectedOrgName);
-                        response.AddressRange.IsNull();
-                    });
+            await TestContext.RunAsync(async (string domain, string expectedOrgName) =>
+            {
+                var response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
+                response.OrganizationName.Is(expectedOrgName);
+                response.AddressRange.IsNull();
+            });
         }
     }
 }
