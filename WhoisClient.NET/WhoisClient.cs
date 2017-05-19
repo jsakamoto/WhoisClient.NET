@@ -257,7 +257,7 @@ namespace Whois.NET
                     {
                         cbRead = s.Read(readBuff, 0, readBuff.Length);
                         res.Append(encoding.GetString(readBuff, 0, cbRead));
-                        if (cbRead > 0 || res.Length == 0) Thread.Sleep(10);
+                        if (cbRead > 0 || res.Length == 0) Thread.Sleep(100);
                     } while (cbRead > 0 || res.Length == 0);
 
                     return res.ToString();
@@ -323,7 +323,7 @@ namespace Whois.NET
                     {
                         cbRead = await s.ReadAsync(readBuff, 0, Math.Min(buffSize, tcpClient.Available)).ConfigureAwait(false);
                         res.Append(encoding.GetString(readBuff, 0, cbRead));
-                        if (cbRead > 0 || res.Length == 0) await Task.Delay(10).ConfigureAwait(false);
+                        if (cbRead > 0 || res.Length == 0) await Task.Delay(100).ConfigureAwait(false);
                     } while (cbRead > 0 || res.Length == 0);
 
                     return res.ToString();
