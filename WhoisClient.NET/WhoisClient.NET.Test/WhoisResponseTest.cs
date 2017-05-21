@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using Whois.NET;
 
 namespace WhoisClient_NET.Test
@@ -7,7 +9,7 @@ namespace WhoisClient_NET.Test
     [TestClass]
     public class WhoisResponseTest
     {
-        private string ResponseJP = 
+        private string ResponseJP =
             "Network Information: [ネットワーク情報]\r\n" +
             "a. [IPネットワークアドレス]     192.41.192.0/24\r\n" +
             "b. [ネットワーク名]             JPNICNET\r\n" +
@@ -31,7 +33,7 @@ namespace WhoisClient_NET.Test
             r.AddressRange.End.ToString().Is("192.41.192.255");
         }
 
-        private string ResponseEN1 = 
+        private string ResponseEN1 =
             "% [whois.apnic.net node-2]\r\n" +
             "% Whois data copyright terms    http://www.apnic.net/db/dbcopyright.html\r\n" +
             "\r\n" +
@@ -119,8 +121,44 @@ namespace WhoisClient_NET.Test
         [TestMethod]
         public void RespondedServersTest()
         {
-            WhoisResponse WR = WhoisClient.Query("150.126.0.0");
+            var WR = WhoisClient.Query("150.126.0.0");
             Assert.AreEqual(3, WR.RespondedServers.Length);
+        }
+
+        [TestMethod]
+        public void JsonSerializationByJSONNETTest()
+        {
+            var response = new WhoisResponse(
+                new[] { "whois.iana.org", "whois.apnic.net", "whois.afrinic.net" },
+                "NetRange: 150.126.0.0 - 150.126.255.255\n" +
+                "OrgName:  Santa Cruz Operation Incorporated");
+            var json = JsonConvert.SerializeObject(response);
+            json.Is("{" +
+                @"""RespondedServers"":[""whois.iana.org"",""whois.apnic.net"",""whois.afrinic.net""]," +
+                @"""Raw"":""NetRange: 150.126.0.0 - 150.126.255.255\nOrgName:  Santa Cruz Operation Incorporated""," +
+                @"""OrganizationName"":""Santa Cruz Operation Incorporated""," +
+                @"""AddressRange"":{""Begin"":""150.126.0.0"",""End"":""150.126.255.255""}" +
+                "}");
+        }
+
+        [TestMethod]
+        public void JsonDeserializationByJSONNETTest()
+        {
+            var json = "{" +
+                @"""RespondedServers"":[""whois.iana.org"",""whois.apnic.net"",""whois.afrinic.net""]," +
+                @"""Raw"":""NetRange: 150.126.0.0 - 150.126.255.255\nOrgName:  Santa Cruz Operation Incorporated""," +
+                @"""OrganizationName"":""Santa Cruz Operation Incorporated""," +
+                @"""AddressRange"":{""Begin"":""150.126.0.0"",""End"":""150.126.255.255""}" +
+                "}";
+            var response = JsonConvert.DeserializeObject<WhoisResponse>(json);
+
+            response.RespondedServers.Is("whois.iana.org", "whois.apnic.net", "whois.afrinic.net");
+            response.OrganizationName.Is("Santa Cruz Operation Incorporated");
+            response.AddressRange.Begin.Is(IPAddress.Parse("150.126.0.0"));
+            response.AddressRange.End.Is(IPAddress.Parse("150.126.255.255"));
+            response.Raw.Is(
+                "NetRange: 150.126.0.0 - 150.126.255.255\n" +
+                "OrgName:  Santa Cruz Operation Incorporated");
         }
     }
 }
