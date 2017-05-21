@@ -69,7 +69,7 @@
   <files>
     <file src="..\WhoisClient.NET\bin\Release\WhoisClient.dll" target="lib/net45" />
     <file src="..\WhoisClient.NET\bin\Release\WhoisClient.xml" target="lib/net45" />
-    <file src="..\WhoisClient.NET\bin\Release\WhoisClient.dll" target="lib/netstandard1.4" />
-    <file src="..\WhoisClient.NET\bin\Release\WhoisClient.xml" target="lib/netstandard1.4" />
+    <file src="..\WhoisClient.NETCore\bin\Release\netstandard1.4\WhoisClient.dll" target="lib/netstandard1.4" />
+    <file src="..\WhoisClient.NETCore\bin\Release\netstandard1.4\WhoisClient.xml" target="lib/netstandard1.4" />
   </files>
 </package>
