@@ -4,21 +4,25 @@
     <TargetFramework>netstandard1.4</TargetFramework>
     <RootNamespace>Whois.NET</RootNamespace>
     <AssemblyName>WhoisClient</AssemblyName>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
     <PackageId>WhoisClient.NET</PackageId>
-    <Version>3.0.0-beta</Version>
     <Authors>J.Sakamoto, Keith J. Jones</Authors>
-    <Company />
-    <Product>WhoisClient.NET</Product>
-    <Description>This library is a WHOIS protocol client used to search owner information by IP address or domain name.
-This library determines the WHOIS server automatically and queries the referral server recursively.
-The response of the whois query contains strongly typed values, and the raw output.</Description>
-    <Copyright>Copyright 2012-2017 J.Sakamoto, 2016 Keith J. Jones Ms-PL License.</Copyright>
+    <Description>
+      This library is a WHOIS protocol client used to search owner information by IP address or domain name.
+      This library determines the WHOIS server automatically and queries the referral server recursively.
+      The response of the whois query contains strongly typed values, and the raw output.
+    </Description>
     <PackageLicenseUrl>https://github.com/jsakamoto/WhoisClient.NET/blob/master/License.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/WhoisClient.NET/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jsakamoto/WhoisClient.NET/</RepositoryUrl>
     <PackageTags>whois</PackageTags>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -31,12 +35,17 @@ The response of the whois query contains strongly typed values, and the raw outp
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\WhoisClient.NET\Properties\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
     <Compile Include="..\WhoisClient.NET\WhoisClient.cs" Link="WhoisClient.cs" />
     <Compile Include="..\WhoisClient.NET\WhoisResponse.cs" Link="WhoisResponse.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ipaddressrange" Version="2.0.0-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
