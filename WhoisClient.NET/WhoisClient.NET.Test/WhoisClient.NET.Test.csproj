@@ -37,14 +37,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ChainingAssertion, Version=1.8.1.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ChainingAssertion.Bin.1.8.1.3-beta\lib\net45\ChainingAssertion.dll</HintPath>
+      <HintPath>..\..\packages\ChainingAssertion.Bin.1.8.1.3\lib\net45\ChainingAssertion.dll</HintPath>
     </Reference>
-    <Reference Include="IPAddressRange, Version=2.0.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IPAddressRange.2.0.0-beta\lib\net45\IPAddressRange.dll</HintPath>
+    <Reference Include="IPAddressRange, Version=2.0.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IPAddressRange.2.0.0.3\lib\net45\IPAddressRange.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -70,13 +70,13 @@
     <Compile Include="WhoisResponseTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\WhoisClient.NET.csproj">
       <Project>{9c98212b-41d1-4160-afd3-31d6e314ef7a}</Project>
       <Name>WhoisClient.NET</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
