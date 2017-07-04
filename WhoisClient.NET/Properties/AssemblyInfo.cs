@@ -7,10 +7,9 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("WhoisClient.NET")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("WhoisClient.NET")]
-[assembly: AssemblyCopyright("Copyright 2012-2016 J.Sakamoto, 2016 Keith J. Jones Ms-PL License.")]
+[assembly: AssemblyCopyright("Copyright 2012-2017 J.Sakamoto, 2016 Keith J. Jones Ms-PL License.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +28,6 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.0.1.0")]
+[assembly: AssemblyVersion("3.0.0.0")]
+[assembly: AssemblyFileVersion("3.0.0.0")]
 

@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using NetTools;
+using System.Threading.Tasks;
 
 namespace Whois.NET
 {
-    using System.IO;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// A WhoisClient structure for quering whois servers.
     /// </summary>
@@ -42,8 +38,6 @@ namespace Whois.NET
 
             if (string.IsNullOrEmpty(server))
             {
-                var ipAddress = default(IPAddress);
-                IPAddress.TryParse(query, out ipAddress);
                 server = "whois.iana.org";
             }
 
@@ -68,8 +62,6 @@ namespace Whois.NET
 
             if (string.IsNullOrEmpty(server))
             {
-                var ipAddress = default(IPAddress);
-                IPAddress.TryParse(query, out ipAddress);
                 server = "whois.iana.org";
             }
 
@@ -91,8 +83,8 @@ namespace Whois.NET
         {
             var server = servers.Last();
 
-            string rawResponse = string.Empty;
-            int iteration = 0;
+            var rawResponse = string.Empty;
+            var iteration = 0;
 
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
@@ -135,8 +127,8 @@ namespace Whois.NET
         {
             var server = servers.Last();
 
-            string rawResponse = string.Empty;
-            int iteration = 0;
+            var rawResponse = string.Empty;
+            var iteration = 0;
 
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
@@ -160,11 +152,7 @@ namespace Whois.NET
                 return await QueryRecursiveAsync(query, servers, port, encoding, timeout, retries, token).ConfigureAwait(false);
             }
             else
-#if NETFX_40
                 return new WhoisResponse(servers.ToArray(), rawResponse);
-#else
-                return await Task.FromResult(new WhoisResponse(servers.ToArray(), rawResponse)).ConfigureAwait(false);
-#endif
         }
 
         /// <summary>
@@ -225,18 +213,28 @@ namespace Whois.NET
             encoding = encoding ?? Encoding.ASCII;
             var tcpClient = new TcpClient();
 
+#if NETSTANDARD
+            // Async connect
+            var t = tcpClient.ConnectAsync(server, port);
+            t.ConfigureAwait(false);
+
+            // Wait at most timeout
+            var success = t.Wait(TimeSpan.FromSeconds(timeout));
+#else
             // Async connect
             var result = tcpClient.BeginConnect(server, port, null, null);
 
             // Wait at most timeout
             var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(timeout));
+#endif
 
             if (!success)
             {
-                // Return an empty string for now.
+                Thread.Sleep(200);
                 return string.Empty;
             }
 
+            var res = new StringBuilder();
             try
             {
                 using (var s = tcpClient.GetStream())
@@ -247,26 +245,31 @@ namespace Whois.NET
 
                     var queryBytes = Encoding.ASCII.GetBytes(query + "\r\n");
                     s.Write(queryBytes, 0, queryBytes.Length);
+                    s.Flush();
 
                     const int buffSize = 8192;
                     var readBuff = new byte[buffSize];
-                    var res = new StringBuilder();
                     var cbRead = default(int);
                     do
                     {
                         cbRead = s.Read(readBuff, 0, readBuff.Length);
                         res.Append(encoding.GetString(readBuff, 0, cbRead));
-                    } while (cbRead > 0);
+                        if (cbRead > 0 || res.Length == 0) Thread.Sleep(100);
+                    } while (cbRead > 0 || res.Length == 0);
 
                     return res.ToString();
                 }
             }
             catch
             {
+                tcpClient.Close();
+                Thread.Sleep(200);
+                return res.ToString();
             }
-
-            // Return an empty string for now.
-            return string.Empty;
+            finally
+            {
+                tcpClient.Close();
+            }
         }
 
         /// <summary>
@@ -292,36 +295,46 @@ namespace Whois.NET
             }
             catch (SocketException)
             {
-#if NETFX_40
+                await Task.Delay(200).ConfigureAwait(false);
                 return string.Empty;
-#else
-                return await Task.FromResult(string.Empty).ConfigureAwait(false);
-#endif
             }
 
+            var res = new StringBuilder();
             try
             {
                 using (var s = tcpClient.GetStream())
                 {
-                    using (var reader = new StreamReader(s))
+                    // Specify the timeouts in milliseconds
+                    s.WriteTimeout = timeout * 1000;
+                    s.ReadTimeout = timeout * 1000;
+
+                    var queryBytes = Encoding.ASCII.GetBytes(query + "\r\n");
+                    await s.WriteAsync(queryBytes, 0, queryBytes.Length).ConfigureAwait(false);
+                    await s.FlushAsync().ConfigureAwait(false);
+
+                    const int buffSize = 8192;
+                    var readBuff = new byte[buffSize];
+                    var cbRead = default(int);
+                    do
                     {
-                        var bytes = Encoding.ASCII.GetBytes(query + "\r\n");
-                        await s.WriteAsync(bytes, 0, bytes.Length, token).ConfigureAwait(false);
-                        await s.FlushAsync(token).ConfigureAwait(false);
-                        return await reader.ReadToEndAsync().ConfigureAwait(false);
-                    }
+                        cbRead = await s.ReadAsync(readBuff, 0, Math.Min(buffSize, tcpClient.Available)).ConfigureAwait(false);
+                        res.Append(encoding.GetString(readBuff, 0, cbRead));
+                        if (cbRead > 0 || res.Length == 0) await Task.Delay(100).ConfigureAwait(false);
+                    } while (cbRead > 0 || res.Length == 0);
+
+                    return res.ToString();
                 }
             }
-            catch
+            catch (Exception)
             {
+                tcpClient.Close();
+                await Task.Delay(200).ConfigureAwait(false);
+                return res.ToString();
             }
-
-            // Return an empty string for now.
-#if NETFX_40
-            return string.Empty;
-#else
-            return await Task.FromResult(string.Empty).ConfigureAwait(false);
-#endif
+            finally
+            {
+                tcpClient.Close();
+            }
         }
     }
 }

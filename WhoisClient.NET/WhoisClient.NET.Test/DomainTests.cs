@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whois.NET;
 
@@ -23,26 +24,24 @@ namespace WhoisClient_NET.Test
         [TestCase(@"facebook.com", @"Facebook, Inc.")]
         public void WhoisClientTest()
         {
-            TestContext.Run(
-                (string domain, string expectedOrganizationName) =>
-                    {
-                        WhoisResponse response = WhoisClient.Query(domain);
-                        Assert.AreEqual(expectedOrganizationName, response.OrganizationName);
-                        Assert.IsNull(response.AddressRange);
-                    });
+            TestContext.Run((string domain, string expectedOrgName) =>
+            {
+                var response = WhoisClient.Query(domain);
+                response.OrganizationName.Is(expectedOrgName);
+                response.AddressRange.IsNull();
+            });
         }
 
         [TestMethod]
         [TestCase(@"google.com", @"Google Inc.")]
         public async Task WhoisClientAsyncTest()
         {
-            await TestContext.RunAsync(
-                async (string domain, string expectedOrganizationName) =>
-                    {
-                        WhoisResponse response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
-                        Assert.AreEqual(expectedOrganizationName, response.OrganizationName);
-                        Assert.IsNull(response.AddressRange);
-                    });
+            await TestContext.RunAsync(async (string domain, string expectedOrgName) =>
+            {
+                var response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
+                response.OrganizationName.Is(expectedOrgName);
+                response.AddressRange.IsNull();
+            });
         }
     }
 }

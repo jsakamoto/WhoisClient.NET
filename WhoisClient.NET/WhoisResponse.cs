@@ -1,11 +1,26 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using NetTools;
+#if !NETSTANDARD
+using System.Runtime.Serialization;
+#endif
 
 namespace Whois.NET
 {
+#if NETSTANDARD
+    [AttributeUsage(AttributeTargets.Class)]
+    internal sealed class DataContractAttribute : Attribute
+    {
+        public DataContractAttribute() { }
+    }
+    [AttributeUsage(AttributeTargets.Property)]
+    internal sealed class DataMemberAttribute : Attribute
+    {
+        public DataMemberAttribute() { }
+    }
+#endif
+
     /// <summary>
     /// A structure containing the whois response information.
     /// </summary>
@@ -58,8 +73,8 @@ namespace Whois.NET
             }
 
             // resolve Address Range.
-            var m2 = Regex.Match(this.Raw, 
-                @"(^a.\W*\[IPネットワークアドレス\]\W+(?<adr>[^\r\n]+))|"+
+            var m2 = Regex.Match(this.Raw,
+                @"(^a.\W*\[IPネットワークアドレス\]\W+(?<adr>[^\r\n]+))|" +
                 @"(^(NetRange|CIDR|inetnum):\W+(?<adr>[^\r\n]+))",
                 RegexOptions.Multiline);
             if (m2.Success)

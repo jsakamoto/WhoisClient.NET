@@ -39,9 +39,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IPAddressRange, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IPAddressRange.1.5.0.0\lib\net40\IPAddressRange.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="IPAddressRange, Version=2.0.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IPAddressRange.2.0.0.3\lib\net45\IPAddressRange.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
