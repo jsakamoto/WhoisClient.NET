@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata minClientVersion="2.12">
     <id>WhoisClient.NET</id>
-    <version>$version$-beta</version>
+    <version>$version$</version>
     <title>WhoisClient.NET</title>
     <authors>J.Sakamoto, Keith J. Jones</authors>
     <owners>J.Sakamoto, Keith J. Jones</owners>
@@ -58,11 +58,11 @@
     <tags>whois</tags>
     <dependencies>
       <group targetFramework=".NETStandard1.4">
-        <dependency id="IPAddressRange" version="2.0.0-beta" />
+        <dependency id="IPAddressRange" version="2.0.0.3" />
         <dependency id="NETStandard.Library" version="1.4.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net45">
-        <dependency id="IPAddressRange" version="2.0.0-beta" />
+        <dependency id="IPAddressRange" version="2.0.0.3" />
       </group>
     </dependencies>
   </metadata>
