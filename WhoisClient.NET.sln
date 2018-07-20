@@ -3,24 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET", "WhoisClient.NET\WhoisClient.NET.csproj", "{9C98212B-41D1-4160-AFD3-31D6E314EF7A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.Test", "WhoisClient.NET\WhoisClient.NET.Test\WhoisClient.NET.Test.csproj", "{A66FD803-D0A1-4E43-A54A-EED02C2D75C4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildNuGetPackage", "BuildNuGetPackage\BuildNuGetPackage.csproj", "{4EDD33CB-007A-4BBD-B163-676E1F1A671D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9C98212B-41D1-4160-AFD3-31D6E314EF7A} = {9C98212B-41D1-4160-AFD3-31D6E314EF7A}
-		{D92FE231-FE29-4270-B36C-AF50B88BE3CD} = {D92FE231-FE29-4270-B36C-AF50B88BE3CD}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NETCore", "WhoisClient.NETCore\WhoisClient.NETCore.csproj", "{D92FE231-FE29-4270-B36C-AF50B88BE3CD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NETCore.Test", "WhoisClient.NETCore.Test\WhoisClient.NETCore.Test.csproj", "{401C20AE-2F4E-4A1E-907C-DBC687D05390}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhoisClient.NET", "WhoisClient.NET\WhoisClient.NET.csproj", "{9C98212B-41D1-4160-AFD3-31D6E314EF7A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "README", "README", "{7F4EE3D0-3041-4278-AC48-A839FF40F057}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhoisClient.NET.Test.FX45", "WhoisClient.NET.Test.FX45\WhoisClient.NET.Test.FX45.csproj", "{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhoisClient.NET.Test.Core20", "WhoisClient.NET.Test.Core20\WhoisClient.NET.Test.Core20.csproj", "{16C22F00-E629-4E42-971D-999F86EE251F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,23 +24,19 @@ Global
 		{9C98212B-41D1-4160-AFD3-31D6E314EF7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C98212B-41D1-4160-AFD3-31D6E314EF7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C98212B-41D1-4160-AFD3-31D6E314EF7A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A66FD803-D0A1-4E43-A54A-EED02C2D75C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A66FD803-D0A1-4E43-A54A-EED02C2D75C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A66FD803-D0A1-4E43-A54A-EED02C2D75C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A66FD803-D0A1-4E43-A54A-EED02C2D75C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4EDD33CB-007A-4BBD-B163-676E1F1A671D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4EDD33CB-007A-4BBD-B163-676E1F1A671D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4EDD33CB-007A-4BBD-B163-676E1F1A671D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D92FE231-FE29-4270-B36C-AF50B88BE3CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D92FE231-FE29-4270-B36C-AF50B88BE3CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D92FE231-FE29-4270-B36C-AF50B88BE3CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D92FE231-FE29-4270-B36C-AF50B88BE3CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{401C20AE-2F4E-4A1E-907C-DBC687D05390}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{401C20AE-2F4E-4A1E-907C-DBC687D05390}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{401C20AE-2F4E-4A1E-907C-DBC687D05390}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{401C20AE-2F4E-4A1E-907C-DBC687D05390}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16C22F00-E629-4E42-971D-999F86EE251F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16C22F00-E629-4E42-971D-999F86EE251F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16C22F00-E629-4E42-971D-999F86EE251F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16C22F00-E629-4E42-971D-999F86EE251F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1FB127EA-51BD-406F-98AD-05CBE03A8893}
 	EndGlobalSection
 EndGlobal

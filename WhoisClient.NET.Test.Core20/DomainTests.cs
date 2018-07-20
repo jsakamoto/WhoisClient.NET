@@ -1,15 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
 using Whois.NET;
+using Xunit;
 
 namespace WhoisClient_NET.Test
 {
-    [TestClass]
     public class DomainTests
     {
-        public TestContext TestContext { get; set; }
-
         /* facebook.com, microsoft.com, google.com, yahoo.com, github.com and most all large domains use MarkMonitor which rate limits queries.
          * If you are using a continuous testing solution then this test may fail from time to time.
          *
@@ -20,28 +16,22 @@ namespace WhoisClient_NET.Test
          *  (2) enable high volume, automated, electronic processes that apply to MarkMonitor.com (or its systems). MarkMonitor.com reserves the right to modify these terms at any time. By submitting this query, you agree to abide by this policy.
          */
 
-        [TestMethod]
-        [TestCase(@"facebook.com", @"Facebook, Inc.")]
-        public void WhoisClientTest()
+        [Theory]
+        [InlineData(@"facebook.com", @"Facebook, Inc.")]
+        public void WhoisClientTest(string domain, string expectedOrgName)
         {
-            TestContext.Run((string domain, string expectedOrgName) =>
-            {
-                var response = WhoisClient.Query(domain);
-                response.OrganizationName.Is(expectedOrgName);
-                response.AddressRange.IsNull();
-            });
+            var response = WhoisClient.Query(domain);
+            response.OrganizationName.Is(expectedOrgName);
+            response.AddressRange.IsNull();
         }
 
-        [TestMethod]
-        [TestCase(@"google.com", @"Google Inc.")]
-        public async Task WhoisClientAsyncTest()
+        [Theory]
+        [InlineData(@"google.com", @"Google Inc.")]
+        public async Task WhoisClientAsyncTest(string domain, string expectedOrgName)
         {
-            await TestContext.RunAsync(async (string domain, string expectedOrgName) =>
-            {
-                var response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
-                response.OrganizationName.Is(expectedOrgName);
-                response.AddressRange.IsNull();
-            });
+            var response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
+            response.OrganizationName.Is(expectedOrgName);
+            response.AddressRange.IsNull();
         }
     }
 }
