@@ -18,8 +18,11 @@ namespace Whois.NET
         /// The has referral.
         /// </summary>
         private static readonly Regex _hasReferralRegex = new Regex(
-                @"(^ReferralServer:\W+whois://(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|(^\s*Whois Server:\s*(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|(^\s*refer:\s*(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|(^remarks:\W+.*(?<refsvr>whois\.[0-9a-z\-\.]+\.[a-z]{2,})(:(?<port>\d+))?)",
-                RegexOptions.Compiled | RegexOptions.Multiline);
+                @"(^ReferralServer:\W+whois://(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
+                @"(^\s*(Registrar\s+)?Whois Server:\s*(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
+                @"(^\s*refer:\s*(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
+                @"(^remarks:\W+.*(?<refsvr>whois\.[0-9a-z\-\.]+\.[a-z]{2,})(:(?<port>\d+))?)",
+                RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Send WHOIS query to WHOIS server, requery to referral servers recursive, and return the response from WHOIS server.
@@ -101,11 +104,10 @@ namespace Whois.NET
                 iteration++;
             }
 
-            var m2 = HasReferral(rawResponse);
-            if (m2.Success)
+            if (HasReferral(rawResponse, server, out var refsvr, out var refport))
             {
-                port = GetReferralServerPort(servers, m2, port);
-                return QueryRecursive(query, servers, port, encoding, timeout, retries);
+                servers.Add(refsvr);
+                return QueryRecursive(query, servers, refport, encoding, timeout, retries);
             }
             else
                 return new WhoisResponse(servers.ToArray(), rawResponse);
@@ -145,39 +147,13 @@ namespace Whois.NET
                 iteration++;
             }
 
-            var m2 = HasReferral(rawResponse);
-            if (m2.Success)
+            if (HasReferral(rawResponse, server, out var refsvr, out var refport))
             {
-                port = GetReferralServerPort(servers, m2, port);
-                return await QueryRecursiveAsync(query, servers, port, encoding, timeout, retries, token).ConfigureAwait(false);
+                servers.Add(refsvr);
+                return await QueryRecursiveAsync(query, servers, refport, encoding, timeout, retries, token).ConfigureAwait(false);
             }
             else
                 return new WhoisResponse(servers.ToArray(), rawResponse);
-        }
-
-        /// <summary>
-        /// Get the referral server port.
-        /// </summary>
-        /// <param name="servers">
-        /// The servers.
-        /// </param>
-        /// <param name="m2">
-        /// The m 2.
-        /// </param>
-        /// <param name="port">
-        /// The port.
-        /// </param>
-        /// <returns>
-        /// The <see cref="int"/>.
-        /// </returns>
-        private static int GetReferralServerPort(List<string> servers, Match m2, int port)
-        {
-            servers.Add(m2.Groups[@"refsvr"].Value);
-            if (m2.Groups["port"].Success)
-            {
-                port = int.Parse(m2.Groups["port"].Value);
-            }
-            return port;
         }
 
         /// <summary>
@@ -186,15 +162,25 @@ namespace Whois.NET
         /// <param name="rawResponse">
         /// The raw response.
         /// </param>
-        /// <returns>
-        /// The <see cref="Match"/>.
-        /// </returns>
-        private static Match HasReferral(string rawResponse)
+        /// <param name="currentServer"></param>
+        /// <param name="refSvr"></param>
+        /// <param name="port"></param>
+        private static bool HasReferral(string rawResponse, string currentServer, out string refSvr, out int port)
         {
+            refSvr = "";
+            port = 43;
+
             // "ReferralServer: whois://whois.apnic.net"
             // "remarks:        at whois.nic.ad.jp. To obtain an English output"
+            // "Registrar WHOIS Server: whois.markmonitor.com"
             var m2 = _hasReferralRegex.Match(rawResponse);
-            return m2;
+            if (!m2.Success) return false;
+
+            refSvr = m2.Groups[@"refsvr"].Value;
+            port = m2.Groups["port"].Success ? int.Parse(m2.Groups["port"].Value) : port;
+            if (currentServer.ToLower() == refSvr.ToLower()) return false;
+
+            return true;
         }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace WhoisClient_NET.Test
         }
 
         [Theory]
-        [InlineData(@"google.com", @"Google Inc.")]
+        [InlineData(@"google.com", @"Google LLC")]
         public async Task WhoisClientAsyncTest(string domain, string expectedOrgName)
         {
             var response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
