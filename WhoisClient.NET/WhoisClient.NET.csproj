@@ -9,14 +9,17 @@
     <AssemblyName>WhoisClient</AssemblyName>
     <Product>WhoisClient.NET</Product>
     <Authors>J.Sakamoto, Keith J. Jones</Authors>
-    <Version>3.0.0.0</Version>
+    <Version>3.0.1.0</Version>
     <Copyright>Copyright 2012-2018 J.Sakamoto; Copyright Keith J. Jones, 2016, Ms-PL License.</Copyright>
     <PackageLicenseUrl>https://github.com/jsakamoto/WhoisClient.NET/blob/master/License.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/WhoisClient.NET/</PackageProjectUrl>
     <Description>This library is a WHOIS protocol client used to search owner information by IP address or domain name.
 This library determines the WHOIS server automatically and queries the referral server recursively.
 The response of the whois query contains strongly typed values, and the raw output.</Description>
-    <PackageReleaseNotes>ver.3.0.0
+    <PackageReleaseNotes>ver.3.0.1
+- Bump IPAddressRange to 3.2.0
+- Fix: poor algorithm of detection referral server.
+ver.3.0.0
 - Enhance: .NET Core support.
 - [BREAKING CHANGE] .NET 4.0 was no longer supported.
 ver.2.0.1
