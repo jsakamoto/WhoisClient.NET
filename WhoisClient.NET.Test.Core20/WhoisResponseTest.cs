@@ -1,15 +1,13 @@
-﻿using System;
-using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Net;
 using Newtonsoft.Json;
 using Whois.NET;
+using Xunit;
 
 namespace WhoisClient_NET.Test
 {
-    [TestClass]
     public class WhoisResponseTest
     {
-        private string ResponseJP =
+        private readonly string ResponseJP =
             "Network Information: [ネットワーク情報]\r\n" +
             "a. [IPネットワークアドレス]     192.41.192.0/24\r\n" +
             "b. [ネットワーク名]             JPNICNET\r\n" +
@@ -18,14 +16,14 @@ namespace WhoisClient_NET.Test
             "m. [管理者連絡窓口]             HH11825JP\r\n" +
             "n. [技術連絡担当者]             MO5920JP\r\n";
 
-        [TestMethod]
+        [Fact]
         public void OrganizationNameTest_JP()
         {
             new WhoisResponse(null, ResponseJP)
                 .OrganizationName.Is("社団法人 日本ネットワークインフォメーションセンター");
         }
 
-        [TestMethod]
+        [Fact]
         public void AddressRangeTest_JP()
         {
             var r = new WhoisResponse(null, ResponseJP);
@@ -33,7 +31,7 @@ namespace WhoisClient_NET.Test
             r.AddressRange.End.ToString().Is("192.41.192.255");
         }
 
-        private string ResponseEN1 =
+        private readonly string ResponseEN1 =
             "% [whois.apnic.net node-2]\r\n" +
             "% Whois data copyright terms    http://www.apnic.net/db/dbcopyright.html\r\n" +
             "\r\n" +
@@ -42,14 +40,14 @@ namespace WhoisClient_NET.Test
             "descr:          Japan Network Information Center\r\n" +
             "country:        JP\r\n";
 
-        [TestMethod]
+        [Fact]
         public void OrganizationNameTest_EN1()
         {
             new WhoisResponse(null, ResponseEN1)
                 .OrganizationName.Is("Japan Network Information Center");
         }
 
-        [TestMethod]
+        [Fact]
         public void AddressRangeTest_EN1()
         {
             var r = new WhoisResponse(null, ResponseEN1);
@@ -57,7 +55,7 @@ namespace WhoisClient_NET.Test
             r.AddressRange.End.ToString().Is("192.41.192.255");
         }
 
-        private string ResponseEN2 =
+        private readonly string ResponseEN2 =
             "#\r\n" +
             "# Query terms are ambiguous.  The query is assumed to be:\r\n" +
             "#     \"n 192.41.192.40\"\r\n" +
@@ -111,21 +109,21 @@ namespace WhoisClient_NET.Test
             "OrgTechEmail:  search-apnic-not-arin@apnic.net\r\n" +
             "OrgTechRef:    http://whois.arin.net/rest/poc/A\r\n";
 
-        [TestMethod]
+        [Fact]
         public void OrganizationNameTest_EN2()
         {
             new WhoisResponse(null, ResponseEN2)
                 .OrganizationName.Is("Asia Pacific Network Information Centre");
         }
 
-        [TestMethod]
+        [Fact]
         public void RespondedServersTest()
         {
             var WR = WhoisClient.Query("150.126.0.0");
-            Assert.AreEqual(3, WR.RespondedServers.Length);
+            WR.RespondedServers.Length.Is(3);
         }
 
-        [TestMethod]
+        [Fact]
         public void JsonSerializationByJSONNETTest()
         {
             var response = new WhoisResponse(
@@ -141,7 +139,7 @@ namespace WhoisClient_NET.Test
                 "}");
         }
 
-        [TestMethod]
+        [Fact]
         public void JsonDeserializationByJSONNETTest()
         {
             var json = "{" +

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
+#if !NET45
 namespace Whois.NET
 {
     internal static class Thread
@@ -14,3 +15,4 @@ namespace Whois.NET
         }
     }
 }
+#endif
