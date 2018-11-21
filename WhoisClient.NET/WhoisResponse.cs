@@ -79,7 +79,17 @@ namespace Whois.NET
                 RegexOptions.Multiline);
             if (m2.Success)
             {
-                this.AddressRange = IPAddressRange.Parse(m2.Groups["adr"].Value);
+                var adr = m2.Groups["adr"].Value;
+                if (adr.Count(c => c == '.') < 3 && adr.Contains('/')) 
+                {
+                    var arrAdr = adr.Split('/');
+                    var ip = arrAdr[0];
+                    var suffix = arrAdr[1];
+                    for (var i = 3; i > adr.Count(c => c == '.'); i--)
+                        ip += ".0";
+                    adr = $"{ip}/{suffix}";
+                }
+                this.AddressRange = IPAddressRange.Parse(adr);
             }
 
             // resolve ARIN Address Range.
