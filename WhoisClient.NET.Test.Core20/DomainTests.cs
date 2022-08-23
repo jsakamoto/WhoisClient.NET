@@ -16,8 +16,10 @@ namespace WhoisClient_NET.Test
          *  (2) enable high volume, automated, electronic processes that apply to MarkMonitor.com (or its systems). MarkMonitor.com reserves the right to modify these terms at any time. By submitting this query, you agree to abide by this policy.
          */
 
+
+
         [Theory]
-        [InlineData(@"facebook.com", @"Facebook, Inc.")]
+        [InlineData(@"facebook.com", @"Meta Platforms, Inc.")]
         public void WhoisClientTest(string domain, string expectedOrgName)
         {
             var response = WhoisClient.Query(domain);
