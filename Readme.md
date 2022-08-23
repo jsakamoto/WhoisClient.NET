@@ -1,7 +1,4 @@
-# WhoisClient.NET [![NuGet Package](https://img.shields.io/nuget/v/WhoisClient.NET.svg)](https://www.nuget.org/packages/WhoisClient.NET/) [![Build status](https://ci.appveyor.com/api/projects/status/lufktg9k1i5khpqp?svg=true)](https://ci.appveyor.com/project/jsakamoto/whoisclient-net)
-
-## NOTICE
-This package has been updated to the latest version of .NET. I also fixed a bug with arin.net queries. All tests have been fixed, and unused tests have been removed
+# WhoisClient.NET [![NuGet Package](https://img.shields.io/nuget/v/WhoisClient.NET.svg)](https://www.nuget.org/packages/WhoisClient.NET/) [![unit tests](https://github.com/jsakamoto/WhoisClient.NET/actions/workflows/unit-tests.yml/badge.svg?branch=master&event=push)](https://github.com/jsakamoto/WhoisClient.NET/actions/workflows/unit-tests.yml)
 
 ## Project Description
 
@@ -65,6 +62,13 @@ private async void QueryByDomain()
 
 ## Supported Framework
 
+### v.4.x
+
+- .NET Standard 2.0
+  - .NET 5 or later
+  - .NET Core 2.0 or later
+  - .NET Frameword v.4.6.2 or later
+
 ### v.3.x
 
 - .NET Core 1.1 or later (.NET Standard 1.4)
@@ -87,3 +91,11 @@ But if you don't want get dependencies for `Microsoft.Bcl.Async` and no need "as
 ```
 PM> Install-Package WhoisClient.NET -Version 1.1.1
 ```
+
+## Release notes
+
+The release notes is [here](https://github.com/jsakamoto/WhoisClient.NET/blob/master/RELEASE-NOTES.txt).
+
+## License
+
+[Microsoft Public License](https://github.com/jsakamoto/WhoisClient.NET/blob/master/License.md)
