@@ -20,4 +20,4 @@ jobs:
 
       # Perform unit tests
       - name: Perform unit tests
-        run: dotnet test WhoisClient.NET.Test -l "console;verbosity=normal" -v:q --nologo
+        run: dotnet test WhoisClient.NET.Test -l "console;verbosity=normal" -v:q -f net6.0 --nologo
