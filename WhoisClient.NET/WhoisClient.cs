@@ -92,15 +92,7 @@ namespace Whois.NET
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
             {
-                if (server == "whois.internic.net" || server == "whois.verisign-grs.com")
-                {
-                    rawResponse = RawQuery("domain " + query, server, port, encoding, timeout);
-                }
-                else
-                {
-                    // Remove the "domain" command from other servers
-                    rawResponse = RawQuery(query, server, port, encoding, timeout);
-                }
+                rawResponse = RawQuery(GetQueryStatement(server, query), server, port, encoding, timeout);
                 iteration++;
             }
 
@@ -135,15 +127,7 @@ namespace Whois.NET
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
             {
-                if (server == "whois.internic.net" || server == "whois.verisign-grs.com")
-                {
-                    rawResponse = await RawQueryAsync("domain " + query, server, port, encoding, timeout, token).ConfigureAwait(false);
-                }
-                else
-                {
-                    // Remove the "domain" command from other servers
-                    rawResponse = await RawQueryAsync(query, server, port, encoding, timeout, token).ConfigureAwait(false);
-                }
+                rawResponse = await RawQueryAsync(GetQueryStatement(server, query), server, port, encoding, timeout, token).ConfigureAwait(false);
                 iteration++;
             }
 
@@ -181,6 +165,27 @@ namespace Whois.NET
             if (currentServer.ToLower() == refSvr.ToLower()) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns back the correct query for specific servers.
+        /// </summary>
+        /// <param name="Server"></param>
+        /// <param name="Query"></param>
+        /// <returns></returns>
+        private static string GetQueryStatement(string Server, string Query)
+        {
+            switch (Server)
+            {
+                case "whois.internic.net":
+                case "whois.verisign-grs.com":
+                    return $"domain {Query}";
+                case "whois.arin.net": // This fixes the 'Query term are ambiguous' message when querying arin. 
+                    return $"n + {Query}";
+                default:
+                    // Remove the "domain" command from other servers
+                    return $"{Query}";
+            }
         }
 
         /// <summary>

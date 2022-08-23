@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.4;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net60</TargetFrameworks>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
@@ -9,7 +9,7 @@
     <AssemblyName>WhoisClient</AssemblyName>
     <Product>WhoisClient.NET</Product>
     <Authors>J.Sakamoto, Keith J. Jones</Authors>
-    <Version>3.0.1.0</Version>
+    <Version>3.0.1.1</Version>
     <Copyright>Copyright 2012-2018 J.Sakamoto; Copyright Keith J. Jones, 2016, Ms-PL License.</Copyright>
     <PackageLicenseUrl>https://github.com/jsakamoto/WhoisClient.NET/blob/master/License.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/WhoisClient.NET/</PackageProjectUrl>
