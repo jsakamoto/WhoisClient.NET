@@ -1,4 +1,4 @@
-From:  https://whoisclient.codeplex.com/license
+From:  https://opensource.org/licenses/MS-PL
 
 Microsoft Public License (Ms-PL)
 
