@@ -149,6 +149,7 @@ public class WhoisResponseTest
             @"""AddressRange"":{""Begin"":""150.126.0.0"",""End"":""150.126.255.255""}" +
             "}";
         var response = JsonConvert.DeserializeObject<WhoisResponse>(json);
+        if (response == null) throw new NullReferenceException();
 
         response.RespondedServers.Is("whois.iana.org", "whois.apnic.net", "whois.afrinic.net");
         response.OrganizationName.Is("Santa Cruz Operation Incorporated");
