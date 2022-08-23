@@ -1,5 +1,8 @@
 # WhoisClient.NET [![NuGet Package](https://img.shields.io/nuget/v/WhoisClient.NET.svg)](https://www.nuget.org/packages/WhoisClient.NET/) [![Build status](https://ci.appveyor.com/api/projects/status/lufktg9k1i5khpqp?svg=true)](https://ci.appveyor.com/project/jsakamoto/whoisclient-net)
 
+## NOTICE
+This package has been updated to the latest version of .NET. I also fixed a bug with arin.net queries. All tests have been fixed, and unused tests have been removed
+
 ## Project Description
 
 This is .NET Class library implementing a WHOIS client.
