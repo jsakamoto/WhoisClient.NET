@@ -204,20 +204,12 @@ namespace Whois.NET
             encoding = encoding ?? Encoding.ASCII;
             var tcpClient = new TcpClient();
 
-#if NETSTANDARD
             // Async connect
             var t = tcpClient.ConnectAsync(server, port);
             t.ConfigureAwait(false);
 
             // Wait at most timeout
             var success = t.Wait(TimeSpan.FromSeconds(timeout));
-#else
-            // Async connect
-            var result = tcpClient.BeginConnect(server, port, null, null);
-
-            // Wait at most timeout
-            var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(timeout));
-#endif
 
             if (!success)
             {

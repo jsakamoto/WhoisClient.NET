@@ -2,24 +2,20 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using NetTools;
-#if !NETSTANDARD
-using System.Runtime.Serialization;
-#endif
 
 namespace Whois.NET
 {
-#if NETSTANDARD
     [AttributeUsage(AttributeTargets.Class)]
     internal sealed class DataContractAttribute : Attribute
     {
         public DataContractAttribute() { }
     }
+
     [AttributeUsage(AttributeTargets.Property)]
     internal sealed class DataMemberAttribute : Attribute
     {
         public DataMemberAttribute() { }
     }
-#endif
 
     /// <summary>
     /// A structure containing the whois response information.
