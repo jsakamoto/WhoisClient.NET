@@ -2,14 +2,14 @@
 
 ## Project Description
 
-This is .NET Class library implementing a WHOIS client.
+This is a .NET Class library implementing a WHOIS client.
 
 ## How to install
 
 To install this library into your application, use the NuGet repository.
 
 ```
-PM> Install-Package WhoisClient.NET
+dotnet add package WhoisClient.NET
 ```
 
 ## Sample source code (C#)
@@ -62,31 +62,25 @@ private async void QueryByDomain()
 
 ## Supported Framework
 
-### v.4.x
+WhoisClient.NET version | Supported Framework
+------------------------|--------------------
+5.x                     | .NET 5, 6, 7, 8 or later, .NET Standard 2.0 (including .NET Core 2.0 or later, .NET Framework 4.6.2 or later)
+4.x                     | .NET 5, 6, 7, 8 or later, .NET Standard 2.0 (including .NET Core 2.0 or later, .NET Framework 4.6.2 or later)
+3.x                     | .NET Standard 1.4 (including .NET Core 1.1 or later, .NET Framework 4.5 or later)
+2.x                     | .NET Framework 4.0 or later
+1.x                     | .NET Framework 4.0 or later
 
-- .NET Standard 2.0
-  - .NET 5 or later
-  - .NET Core 2.0 or later
-  - .NET Frameword v.4.6.2 or later
+**NOTICE** 
 
-### v.3.x
+- WhoisClient.NET v.4.x doesn't no longer support .NET Framework **4.5.x or earlier**.
+- WhoisClient.NET v.3.x doesn't no longer support .NET Framework **4.0**.
+- WhoisClient.NET v.1.x and v.2.x don't support .NET Core.
 
-- .NET Core 1.1 or later (.NET Standard 1.4)
-- .NET Frameword v.4.5 or later
+### Async version for .NET Framework 4.0
 
-**NOTICE** - WhoisClient.NET v.3.x is no longer supported .NET Framework **4.0**.
+`WhoisClient.NET` ver.2.x support "async" version methods for also .NET Framework 4.0 powered by `Microsoft.Bcl.Async` NuGet package.
 
-### v.2.x
-
-- .NET Frameword v.4.0 or later
-
-**NOTICE** - WhoisClient.NET v.2.x isn't supported .NET Core.
-
-#### Async version for .NET Framework 4.0
-
-`WhoisClient.NET` ver.2.x support "async" version methods for also .NET Framework 4.0 with powered by `Microsoft.Bcl.Async` NuGet package.
-
-But if you don't want get dependencies for `Microsoft.Bcl.Async` and no need "async" version method, you can stay using v.1.x by like the follow install command.
+But if you don't want to get dependencies for `Microsoft.Bcl.Async` and have no need "async" version method, you can stay using v.1.x by like the following install command.
 
 ```
 PM> Install-Package WhoisClient.NET -Version 1.1.1
@@ -94,7 +88,7 @@ PM> Install-Package WhoisClient.NET -Version 1.1.1
 
 ## Release notes
 
-The release notes is [here](https://github.com/jsakamoto/WhoisClient.NET/blob/master/RELEASE-NOTES.txt).
+The release notes are [here](https://github.com/jsakamoto/WhoisClient.NET/blob/master/RELEASE-NOTES.txt).
 
 ## License
 
