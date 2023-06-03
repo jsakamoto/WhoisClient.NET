@@ -24,9 +24,10 @@ public class IpTests
     [InlineData(@"108.234.177.20", @"AT&T Corp.", @"108.192.0.0-108.255.255.255")]
     [InlineData(@"31.116.94.96", @"EE route", @"31.64.0.0-31.127.255.255")]
     [InlineData(@"104.130.122.229", @"Rackspace Hosting", "104.130.0.0-104.130.255.255")]
+    [InlineData(@"2600::", @"Sprint", "2600::-2600:f:ffff:ffff:ffff:ffff:ffff:ffff")]
     public async Task WhoisClientAsyncTest(string ip, string expectedOrgName, string expectedAddressRange)
     {
-        var response = await WhoisClient.QueryAsync(ip).ConfigureAwait(false);
+        var response = await WhoisClient.QueryAsync(ip);
         response.OrganizationName.Is(expectedOrgName);
         response.AddressRange.ToString().Is(expectedAddressRange);
     }

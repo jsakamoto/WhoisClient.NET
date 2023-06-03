@@ -28,7 +28,7 @@ public class DomainTests
     [InlineData(@"google.com", @"Google LLC")]
     public async Task WhoisClientAsyncTest(string domain, string expectedOrgName)
     {
-        var response = await WhoisClient.QueryAsync(domain).ConfigureAwait(false);
+        var response = await WhoisClient.QueryAsync(domain);
         response.OrganizationName.Is(expectedOrgName);
         response.AddressRange.IsNull();
     }
