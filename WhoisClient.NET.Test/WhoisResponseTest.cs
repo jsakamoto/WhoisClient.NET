@@ -1,10 +1,11 @@
 ﻿using System.Net;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using Whois.NET;
-using Xunit;
 
 namespace WhoisClient_NET.Test;
 
+[Parallelizable(ParallelScope.All)]
 public class WhoisResponseTest
 {
     private readonly string ResponseJP =
@@ -16,14 +17,14 @@ public class WhoisResponseTest
         "m. [管理者連絡窓口]             HH11825JP\r\n" +
         "n. [技術連絡担当者]             MO5920JP\r\n";
 
-    [Fact]
+    [Test]
     public void OrganizationNameTest_JP()
     {
         new WhoisResponse(null, this.ResponseJP)
             .OrganizationName.Is("社団法人 日本ネットワークインフォメーションセンター");
     }
 
-    [Fact]
+    [Test]
     public void AddressRangeTest_JP()
     {
         var r = new WhoisResponse(null, this.ResponseJP);
@@ -40,14 +41,14 @@ public class WhoisResponseTest
         "descr:          Japan Network Information Center\r\n" +
         "country:        JP\r\n";
 
-    [Fact]
+    [Test]
     public void OrganizationNameTest_EN1()
     {
         new WhoisResponse(null, this.ResponseEN1)
             .OrganizationName.Is("Japan Network Information Center");
     }
 
-    [Fact]
+    [Test]
     public void AddressRangeTest_EN1()
     {
         var r = new WhoisResponse(null, this.ResponseEN1);
@@ -109,21 +110,21 @@ public class WhoisResponseTest
         "OrgTechEmail:  search-apnic-not-arin@apnic.net\r\n" +
         "OrgTechRef:    http://whois.arin.net/rest/poc/A\r\n";
 
-    [Fact]
+    [Test]
     public void OrganizationNameTest_EN2()
     {
         new WhoisResponse(null, this.ResponseEN2)
             .OrganizationName.Is("Asia Pacific Network Information Centre");
     }
 
-    [Fact]
+    [Test]
     public void RespondedServersTest()
     {
         var WR = WhoisClient.Query("150.126.0.0");
         WR.RespondedServers.Length.Is(3);
     }
 
-    [Fact]
+    [Test]
     public void JsonSerializationByJSONNETTest()
     {
         var response = new WhoisResponse(
@@ -139,7 +140,7 @@ public class WhoisResponseTest
             "}");
     }
 
-    [Fact]
+    [Test]
     public void JsonDeserializationByJSONNETTest()
     {
         var json = "{" +

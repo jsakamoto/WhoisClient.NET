@@ -1,8 +1,9 @@
-﻿using Whois.NET;
-using Xunit;
+﻿using NUnit.Framework;
+using Whois.NET;
 
 namespace WhoisClient_NET.Test;
 
+[Parallelizable(ParallelScope.All)]
 public class DomainTests
 {
     /* facebook.com, microsoft.com, google.com, yahoo.com, github.com and most all large domains use MarkMonitor which rate limits queries.
@@ -15,8 +16,8 @@ public class DomainTests
      *  (2) enable high volume, automated, electronic processes that apply to MarkMonitor.com (or its systems). MarkMonitor.com reserves the right to modify these terms at any time. By submitting this query, you agree to abide by this policy.
      */
 
-    [Theory]
-    [InlineData(@"facebook.com", @"Meta Platforms, Inc.")]
+    [Test]
+    [TestCase(@"facebook.com", @"Meta Platforms, Inc.")]
     public void WhoisClientTest(string domain, string expectedOrgName)
     {
         var response = WhoisClient.Query(domain);
@@ -24,8 +25,8 @@ public class DomainTests
         response.AddressRange.IsNull();
     }
 
-    [Theory]
-    [InlineData(@"google.com", @"Google LLC")]
+    [Test]
+    [TestCase(@"google.com", @"Google LLC")]
     public async Task WhoisClientAsyncTest(string domain, string expectedOrgName)
     {
         var response = await WhoisClient.QueryAsync(domain);

@@ -1,8 +1,9 @@
-﻿using Whois.NET;
-using Xunit;
+﻿using NUnit.Framework;
+using Whois.NET;
 
 namespace WhoisClient_NET.Test;
 
+[Parallelizable(ParallelScope.All)]
 public class IpTests
 {
     public static object[][] IpTestCases = new object[][]
@@ -16,8 +17,8 @@ public class IpTests
         new object[] { @"2600::", @"Sprint", "2600::-2600:f:ffff:ffff:ffff:ffff:ffff:ffff" },
     };
 
-    [Theory]
-    [MemberData(nameof(IpTestCases))]
+    [Test]
+    [TestCaseSource(nameof(IpTestCases))]
     public void WhoisClientTest(string ip, string expectedOrgName, string expectedAddressRange)
     {
         var response = WhoisClient.Query(ip);
@@ -25,8 +26,8 @@ public class IpTests
         response.AddressRange.ToString().Is(expectedAddressRange);
     }
 
-    [Theory]
-    [MemberData(nameof(IpTestCases))]
+    [Test]
+    [TestCaseSource(nameof(IpTestCases))]
     public async Task WhoisClientAsyncTest(string ip, string expectedOrgName, string expectedAddressRange)
     {
         var response = await WhoisClient.QueryAsync(ip);
