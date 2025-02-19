@@ -97,8 +97,16 @@ namespace Whois.NET
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
             {
-                rawResponse = RawQuery(GetQueryStatement(server, query), server, port, encoding, timeout, rethrowExceptions);
-                iteration++;
+                try
+                {
+                    iteration++;
+                    rawResponse = RawQuery(
+                        GetQueryStatement(server, query), server, port, encoding, timeout, rethrowExceptions);
+                }
+                catch (Exception) when (iteration < retries)
+                {
+                    rawResponse = null;
+                }
             }
 
             if (HasReferral(rawResponse, server, out var refsvr, out var refport))
@@ -133,9 +141,16 @@ namespace Whois.NET
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
             {
-                rawResponse = await RawQueryAsync(
-                    GetQueryStatement(server, query), server, port, encoding, timeout, rethrowExceptions, token).ConfigureAwait(false);
-                iteration++;
+                try
+                {
+                    iteration++;
+                    rawResponse = await RawQueryAsync(
+                        GetQueryStatement(server, query), server, port, encoding, timeout, rethrowExceptions, token).ConfigureAwait(false);
+                }
+                catch (Exception) when (iteration < retries)
+                {
+                    rawResponse = null;
+                }
             }
 
             if (HasReferral(rawResponse, server, out var refsvr, out var refport))
@@ -228,7 +243,7 @@ namespace Whois.NET
                     return string.Empty;
                 }
             }
-            catch (AggregateException aex) when (aex.InnerException is SocketException)
+            catch
             {
                 Thread.Sleep(200);
 
