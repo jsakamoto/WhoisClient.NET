@@ -34,9 +34,10 @@ namespace Whois.NET
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
+        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         public static WhoisResponse Query(string query, string server = null, int port = 43,
-            Encoding encoding = null, int timeout = 600, int retries = 10)
+            Encoding encoding = null, int timeout = 600, int retries = 10, bool rethrowExceptions = false)
         {
             encoding = encoding ?? Encoding.ASCII;
 
@@ -45,7 +46,7 @@ namespace Whois.NET
                 server = "whois.iana.org";
             }
 
-            return QueryRecursive(query, new List<string> { server }, port, encoding, timeout, retries);
+            return QueryRecursive(query, new List<string> { server }, port, encoding, timeout, retries, rethrowExceptions);
         }
 
         /// <summary>
@@ -57,10 +58,11 @@ namespace Whois.NET
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
+        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         public static async Task<WhoisResponse> QueryAsync(string query, string server = null, int port = 43,
-            Encoding encoding = null, int timeout = 600, int retries = 10, CancellationToken token = default(CancellationToken))
+            Encoding encoding = null, int timeout = 600, int retries = 10, bool rethrowExceptions = false, CancellationToken token = default(CancellationToken))
         {
             encoding = encoding ?? Encoding.ASCII;
 
@@ -69,7 +71,8 @@ namespace Whois.NET
                 server = "whois.iana.org";
             }
 
-            return await QueryRecursiveAsync(query, new List<string> { server }, port, encoding, timeout, retries, token).ConfigureAwait(false);
+            return await QueryRecursiveAsync(
+                query, new List<string> { server }, port, encoding, timeout, retries, rethrowExceptions, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -81,9 +84,10 @@ namespace Whois.NET
         /// <param name="encoding">The encoding to use during the query.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
+        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <returns>A whois response structure containing the results of the whois queries.</returns>
         private static WhoisResponse QueryRecursive(string query, List<string> servers, int port,
-            Encoding encoding, int timeout = 600, int retries = 10)
+            Encoding encoding, int timeout = 600, int retries = 10, bool rethrowExceptions = false)
         {
             var server = servers.Last();
 
@@ -93,14 +97,22 @@ namespace Whois.NET
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
             {
-                rawResponse = RawQuery(GetQueryStatement(server, query), server, port, encoding, timeout);
-                iteration++;
+                try
+                {
+                    iteration++;
+                    rawResponse = RawQuery(
+                        GetQueryStatement(server, query), server, port, encoding, timeout, rethrowExceptions);
+                }
+                catch (Exception) when (iteration < retries)
+                {
+                    rawResponse = null;
+                }
             }
 
             if (HasReferral(rawResponse, server, out var refsvr, out var refport))
             {
                 servers.Add(refsvr);
-                return QueryRecursive(query, servers, refport, encoding, timeout, retries);
+                return QueryRecursive(query, servers, refport, encoding, timeout, retries, rethrowExceptions);
             }
             else
                 return new WhoisResponse(servers.ToArray(), rawResponse);
@@ -115,10 +127,11 @@ namespace Whois.NET
         /// <param name="encoding">The encoding to use during the query.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
+        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>A whois response structure containing the results of the whois queries.</returns>
         private static async Task<WhoisResponse> QueryRecursiveAsync(string query, List<string> servers, int port,
-            Encoding encoding, int timeout = 600, int retries = 10, CancellationToken token = default(CancellationToken))
+            Encoding encoding, int timeout = 600, int retries = 10, bool rethrowExceptions = false, CancellationToken token = default(CancellationToken))
         {
             var server = servers.Last();
 
@@ -128,14 +141,23 @@ namespace Whois.NET
             // Continue to connect within the retries number
             while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
             {
-                rawResponse = await RawQueryAsync(GetQueryStatement(server, query), server, port, encoding, timeout, token).ConfigureAwait(false);
-                iteration++;
+                try
+                {
+                    iteration++;
+                    rawResponse = await RawQueryAsync(
+                        GetQueryStatement(server, query), server, port, encoding, timeout, rethrowExceptions, token).ConfigureAwait(false);
+                }
+                catch (Exception) when (iteration < retries)
+                {
+                    rawResponse = null;
+                }
             }
 
             if (HasReferral(rawResponse, server, out var refsvr, out var refport))
             {
                 servers.Add(refsvr);
-                return await QueryRecursiveAsync(query, servers, refport, encoding, timeout, retries, token).ConfigureAwait(false);
+                return await QueryRecursiveAsync(
+                    query, servers, refport, encoding, timeout, retries, rethrowExceptions, token).ConfigureAwait(false);
             }
             else
                 return new WhoisResponse(servers.ToArray(), rawResponse);
@@ -198,23 +220,36 @@ namespace Whois.NET
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.  Function returns empty string if it times out.</param>
+        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         public static string RawQuery(string query, string server, int port = 43,
-            Encoding encoding = null, int timeout = 600)
+            Encoding encoding = null, int timeout = 600, bool rethrowExceptions = false)
         {
             encoding = encoding ?? Encoding.ASCII;
             var tcpClient = new TcpClient();
 
-            // Async connect
-            var t = tcpClient.ConnectAsync(server, port);
-            t.ConfigureAwait(false);
+            try
+            {
+                // Async connect
+                var t = tcpClient.ConnectAsync(server, port);
+                t.ConfigureAwait(false);
 
-            // Wait at most timeout
-            var success = t.Wait(TimeSpan.FromSeconds(timeout));
+                // Wait at most timeout
+                var success = t.Wait(TimeSpan.FromSeconds(timeout));
 
-            if (!success)
+                if (!success)
+                {
+                    Thread.Sleep(200);
+                    return string.Empty;
+                }
+            }
+            catch
             {
                 Thread.Sleep(200);
+
+                if (rethrowExceptions)
+                    throw;
+
                 return string.Empty;
             }
 
@@ -248,6 +283,10 @@ namespace Whois.NET
             {
                 tcpClient.Close();
                 Thread.Sleep(200);
+
+                if (rethrowExceptions)
+                    throw;
+
                 return res.ToString();
             }
             finally
@@ -265,11 +304,14 @@ namespace Whois.NET
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.  Function returns empty string if it times out.</param>
+        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         public static async Task<string> RawQueryAsync(string query, string server, int port = 43,
-            Encoding encoding = null, int timeout = 600, CancellationToken token = default(CancellationToken))
+            Encoding encoding = null, int timeout = 600, bool rethrowExceptions = false, CancellationToken token = default(CancellationToken))
         {
+            encoding = encoding ?? Encoding.ASCII;
+
             var tcpClient = new TcpClient();
 
             // Async connect
@@ -280,6 +322,10 @@ namespace Whois.NET
             catch (SocketException)
             {
                 await Task.Delay(200).ConfigureAwait(false);
+
+                if (rethrowExceptions)
+                    throw;
+
                 return string.Empty;
             }
 
@@ -293,17 +339,17 @@ namespace Whois.NET
                     s.ReadTimeout = timeout * 1000;
 
                     var queryBytes = Encoding.ASCII.GetBytes(query + "\r\n");
-                    await s.WriteAsync(queryBytes, 0, queryBytes.Length).ConfigureAwait(false);
-                    await s.FlushAsync().ConfigureAwait(false);
+                    await s.WriteAsync(queryBytes, 0, queryBytes.Length, token).ConfigureAwait(false);
+                    await s.FlushAsync(token).ConfigureAwait(false);
 
                     const int buffSize = 8192;
                     var readBuff = new byte[buffSize];
                     var cbRead = default(int);
                     do
                     {
-                        cbRead = await s.ReadAsync(readBuff, 0, Math.Min(buffSize, tcpClient.Available)).ConfigureAwait(false);
+                        cbRead = await s.ReadAsync(readBuff, 0, Math.Min(buffSize, tcpClient.Available), token).ConfigureAwait(false);
                         res.Append(encoding.GetString(readBuff, 0, cbRead));
-                        if (cbRead > 0 || res.Length == 0) await Task.Delay(100).ConfigureAwait(false);
+                        if (cbRead > 0 || res.Length == 0) await Task.Delay(100, token).ConfigureAwait(false);
                     } while (cbRead > 0 || res.Length == 0);
 
                     return res.ToString();
@@ -313,6 +359,10 @@ namespace Whois.NET
             {
                 tcpClient.Close();
                 await Task.Delay(200).ConfigureAwait(false);
+
+                if (rethrowExceptions)
+                    throw;
+
                 return res.ToString();
             }
             finally

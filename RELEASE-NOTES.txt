@@ -1,3 +1,8 @@
+v.5.0.1
+- Added parsing of alternative JPNIC response format (without key letters)
+- Fixed tests
+- Added ability to rethrow transport exceptions that've occurred during WHOIS request instead of swallowing them
+
 v.5.0.0
 - Update the target frameworks
 - Improvement: aware "whois: <server>" syntax for referral servers
