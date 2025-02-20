@@ -30,7 +30,7 @@ The response of the whois query contains strongly typed values, and the raw outp
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IPAddressRange" Version="6.0.0" />
+    <PackageReference Include="IPAddressRange" Version="6.1.0" />
   </ItemGroup>
 
   <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
