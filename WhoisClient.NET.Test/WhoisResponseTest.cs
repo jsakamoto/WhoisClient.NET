@@ -149,7 +149,7 @@ public class WhoisResponseTest
     [Test]
     public void RespondedServersTest()
     {
-        var WR = WhoisClient.Query("150.126.0.0");
+        var WR = WhoisClient.Query("150.126.0.0", new WhoisQueryOptions());
         WR.RespondedServers.Length.Is(3);
     }
 

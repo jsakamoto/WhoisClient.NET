@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -26,7 +27,7 @@ namespace Whois.NET
                 RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// Send WHOIS query to WHOIS server, requery to referral servers recursive, and return the response from WHOIS server.
+        /// Send WHOIS query to WHOIS server, re-query to referral servers recursive, and return the response from WHOIS server.
         /// </summary>
         /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
         /// <param name="server">FQDN of whois server (ex."whois.arin.net"). This parameter is optional (default value is null) to determine server automatically.</param>
@@ -34,23 +35,36 @@ namespace Whois.NET
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
-        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
+        [Obsolete("Use the 'Query(string query, WhoisQueryOptions options)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static WhoisResponse Query(string query, string server = null, int port = 43,
-            Encoding encoding = null, int timeout = 600, int retries = 10, bool rethrowExceptions = false)
+            Encoding encoding = null, int timeout = 600, int retries = 10)
         {
-            encoding = encoding ?? Encoding.ASCII;
+            var options = new WhoisQueryOptions();
+            options.Server = !string.IsNullOrEmpty(server) ? server : options.Server;
+            options.Port = port;
+            options.Encoding = encoding ?? options.Encoding;
+            options.Timeout = timeout;
+            options.Retries = retries;
 
-            if (string.IsNullOrEmpty(server))
-            {
-                server = "whois.iana.org";
-            }
-
-            return QueryRecursive(query, new List<string> { server }, port, encoding, timeout, retries, rethrowExceptions);
+            var servers = new List<EndPoint> { new EndPoint(options.Server, options.Port) };
+            return QueryRecursive(query, servers, options);
         }
 
         /// <summary>
-        /// Send WHOIS query to WHOIS server, requery to referral servers recursive, and return the response from WHOIS server.
+        /// Send WHOIS query to WHOIS server, re-query to referral servers recursive, and return the response from WHOIS server.
+        /// </summary>
+        /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
+        /// <param name="options">The options for the whois query.</param>
+        /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
+        public static WhoisResponse Query(string query, WhoisQueryOptions options)
+        {
+            var servers = new List<EndPoint> { new EndPoint(options.Server, options.Port) };
+            return QueryRecursive(query, servers, options);
+        }
+
+        /// <summary>
+        /// Send WHOIS query to WHOIS server, re-query to referral servers recursive, and return the response from WHOIS server.
         /// </summary>
         /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
         /// <param name="server">FQDN of whois server (ex."whois.arin.net"). This parameter is optional (default value is null) to determine server automatically.</param>
@@ -58,21 +72,34 @@ namespace Whois.NET
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
-        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
+        [Obsolete("Use the 'QueryAsync(string query, WhoisQueryOptions options, CancellationToken token)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static async Task<WhoisResponse> QueryAsync(string query, string server = null, int port = 43,
-            Encoding encoding = null, int timeout = 600, int retries = 10, bool rethrowExceptions = false, CancellationToken token = default(CancellationToken))
+            Encoding encoding = null, int timeout = 600, int retries = 10, CancellationToken token = default(CancellationToken))
         {
-            encoding = encoding ?? Encoding.ASCII;
+            var options = new WhoisQueryOptions();
+            options.Server = !string.IsNullOrEmpty(server) ? server : options.Server;
+            options.Port = port;
+            options.Encoding = encoding ?? options.Encoding;
+            options.Timeout = timeout;
+            options.Retries = retries;
 
-            if (string.IsNullOrEmpty(server))
-            {
-                server = "whois.iana.org";
-            }
+            var servers = new List<EndPoint> { new EndPoint(options.Server, options.Port) };
+            return await QueryRecursiveAsync(query, servers, options, token).ConfigureAwait(false);
+        }
 
-            return await QueryRecursiveAsync(
-                query, new List<string> { server }, port, encoding, timeout, retries, rethrowExceptions, token).ConfigureAwait(false);
+        /// <summary>
+        /// Send WHOIS query to WHOIS server, re-query to referral servers recursive, and return the response from WHOIS server.
+        /// </summary>
+        /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
+        /// <param name="options">The options for the whois query.</param>
+        /// <param name="token">The token to monitor for cancellation requests.</param>
+        /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
+        public static async Task<WhoisResponse> QueryAsync(string query, WhoisQueryOptions options, CancellationToken token = default(CancellationToken))
+        {
+            var servers = new List<EndPoint> { new EndPoint(options.Server, options.Port) };
+            return await QueryRecursiveAsync(query, servers, options, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -80,14 +107,9 @@ namespace Whois.NET
         /// </summary>
         /// <param name="query">The query for the whois server.</param>
         /// <param name="servers">The list of servers previously queried.</param>
-        /// <param name="port">The port to query.</param>
-        /// <param name="encoding">The encoding to use during the query.</param>
-        /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
-        /// <param name="retries">The number of times a connection will be attempted.</param>
-        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
+        /// <param name="options">The options for the whois query.</param>
         /// <returns>A whois response structure containing the results of the whois queries.</returns>
-        private static WhoisResponse QueryRecursive(string query, List<string> servers, int port,
-            Encoding encoding, int timeout = 600, int retries = 10, bool rethrowExceptions = false)
+        private static WhoisResponse QueryRecursive(string query, List<EndPoint> servers, IQueryOptions options)
         {
             var server = servers.Last();
 
@@ -95,27 +117,26 @@ namespace Whois.NET
             var iteration = 0;
 
             // Continue to connect within the retries number
-            while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
+            while (string.IsNullOrWhiteSpace(rawResponse) && iteration < options.Retries)
             {
                 try
                 {
                     iteration++;
-                    rawResponse = RawQuery(
-                        GetQueryStatement(server, query), server, port, encoding, timeout, rethrowExceptions);
+                    rawResponse = RawQuery(GetQueryStatement(server, query), server, options);
                 }
-                catch (Exception) when (iteration < retries)
+                catch (Exception) when (iteration < options.Retries)
                 {
                     rawResponse = null;
                 }
             }
 
-            if (HasReferral(rawResponse, server, out var refsvr, out var refport))
+            if (HasReferral(rawResponse, server, out var refServer))
             {
-                servers.Add(refsvr);
-                return QueryRecursive(query, servers, refport, encoding, timeout, retries, rethrowExceptions);
+                servers.Add(refServer);
+                return QueryRecursive(query, servers, options);
             }
             else
-                return new WhoisResponse(servers.ToArray(), rawResponse);
+                return new WhoisResponse(servers.Select(s => s.Host).ToArray(), rawResponse);
         }
 
         /// <summary>
@@ -123,15 +144,10 @@ namespace Whois.NET
         /// </summary>
         /// <param name="query">The query for the whois server.</param>
         /// <param name="servers">The list of servers previously queried.</param>
-        /// <param name="port">The port to query.</param>
-        /// <param name="encoding">The encoding to use during the query.</param>
-        /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
-        /// <param name="retries">The number of times a connection will be attempted.</param>
-        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
+        /// <param name="options">The options for the whois query.</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>A whois response structure containing the results of the whois queries.</returns>
-        private static async Task<WhoisResponse> QueryRecursiveAsync(string query, List<string> servers, int port,
-            Encoding encoding, int timeout = 600, int retries = 10, bool rethrowExceptions = false, CancellationToken token = default(CancellationToken))
+        private static async Task<WhoisResponse> QueryRecursiveAsync(string query, List<EndPoint> servers, IQueryOptions options, CancellationToken token)
         {
             var server = servers.Last();
 
@@ -139,28 +155,26 @@ namespace Whois.NET
             var iteration = 0;
 
             // Continue to connect within the retries number
-            while (string.IsNullOrWhiteSpace(rawResponse) && iteration < retries)
+            while (string.IsNullOrWhiteSpace(rawResponse) && iteration < options.Retries)
             {
                 try
                 {
                     iteration++;
-                    rawResponse = await RawQueryAsync(
-                        GetQueryStatement(server, query), server, port, encoding, timeout, rethrowExceptions, token).ConfigureAwait(false);
+                    rawResponse = await RawQueryAsync(GetQueryStatement(server, query), server, options, token).ConfigureAwait(false);
                 }
-                catch (Exception) when (iteration < retries)
+                catch (Exception) when (iteration < options.Retries)
                 {
                     rawResponse = null;
                 }
             }
 
-            if (HasReferral(rawResponse, server, out var refsvr, out var refport))
+            if (HasReferral(rawResponse, server, out var refServer))
             {
-                servers.Add(refsvr);
-                return await QueryRecursiveAsync(
-                    query, servers, refport, encoding, timeout, retries, rethrowExceptions, token).ConfigureAwait(false);
+                servers.Add(refServer);
+                return await QueryRecursiveAsync(query, servers, options, token).ConfigureAwait(false);
             }
             else
-                return new WhoisResponse(servers.ToArray(), rawResponse);
+                return new WhoisResponse(servers.Select(s => s.Host).ToArray(), rawResponse);
         }
 
         /// <summary>
@@ -170,12 +184,12 @@ namespace Whois.NET
         /// The raw response.
         /// </param>
         /// <param name="currentServer"></param>
-        /// <param name="refSvr"></param>
-        /// <param name="port"></param>
-        private static bool HasReferral(string rawResponse, string currentServer, out string refSvr, out int port)
+        /// <param name="refServer">The output parameter for the referral server.</param>
+        private static bool HasReferral(string rawResponse, EndPoint currentServer, out EndPoint refServer)
         {
-            refSvr = "";
-            port = 43;
+            refServer = null;
+            var refServerHost = "";
+            var refServerPort = 43;
 
             // "ReferralServer: whois://whois.apnic.net"
             // "remarks:        at whois.nic.ad.jp. To obtain an English output"
@@ -183,59 +197,88 @@ namespace Whois.NET
             var m2 = _hasReferralRegex.Match(rawResponse);
             if (!m2.Success) return false;
 
-            refSvr = m2.Groups[@"refsvr"].Value;
-            port = m2.Groups["port"].Success ? int.Parse(m2.Groups["port"].Value) : port;
-            if (currentServer.ToLower() == refSvr.ToLower()) return false;
+            refServerHost = m2.Groups[@"refsvr"].Value;
+            refServerPort = m2.Groups["port"].Success ? int.Parse(m2.Groups["port"].Value) : refServerPort;
+            if (currentServer.Host.ToLower() == refServerHost.ToLower()) return false;
 
+            refServer = new EndPoint(refServerHost, refServerPort);
             return true;
         }
 
         /// <summary>
         /// Returns back the correct query for specific servers.
         /// </summary>
-        /// <param name="Server"></param>
-        /// <param name="Query"></param>
+        /// <param name="server"></param>
+        /// <param name="query"></param>
         /// <returns></returns>
-        private static string GetQueryStatement(string Server, string Query)
+        private static string GetQueryStatement(EndPoint server, string query)
         {
-            switch (Server)
+            switch (server.Host)
             {
                 case "whois.internic.net":
                 case "whois.verisign-grs.com":
-                    return $"domain {Query}";
+                    return $"domain {query}";
                 case "whois.arin.net": // This fixes the 'Query term are ambiguous' message when querying arin. 
-                    return $"n + {Query}";
+                    return $"n + {query}";
                 default:
                     // Remove the "domain" command from other servers
-                    return $"{Query}";
+                    return $"{query}";
             }
         }
 
         /// <summary>
         /// Send simple WHOIS query to WHOIS server, and return the response from WHOIS server.
-        /// (No requery to referral servers, and No parse the result of query.)
+        /// (No re-query to referral servers, and No parse the result of query.)
         /// </summary>
         /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
         /// <param name="server">FQDN of whois server (ex."whois.arin.net").</param>
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.  Function returns empty string if it times out.</param>
-        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
-        public static string RawQuery(string query, string server, int port = 43,
-            Encoding encoding = null, int timeout = 600, bool rethrowExceptions = false)
+        [Obsolete("Use the 'RawQuery(string query, WhoisQueryOptions options)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
+        public static string RawQuery(string query, string server, int port = 43, Encoding encoding = null, int timeout = 600)
         {
-            encoding = encoding ?? Encoding.ASCII;
+            var options = new WhoisQueryOptions();
+            options.Server = server;
+            options.Port = port;
+            options.Encoding = encoding ?? options.Encoding;
+            options.Timeout = timeout;
+            return RawQuery(query, new EndPoint(options.Server, options.Port), options);
+        }
+
+        /// <summary>
+        /// Send simple WHOIS query to WHOIS server, and return the response from WHOIS server.
+        /// (No re-query to referral servers, and No parse the result of query.)
+        /// </summary>
+        /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
+        /// <param name="options">The options for the whois query.</param>
+        /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
+        public static string RawQuery(string query, WhoisQueryOptions options)
+        {
+            return RawQuery(query, new EndPoint(options.Server, options.Port), options);
+        }
+
+        /// <summary>
+        /// Send simple WHOIS query to WHOIS server, and return the response from WHOIS server.
+        /// (No re-query to referral servers, and No parse the result of query.)
+        /// </summary>
+        /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
+        /// <param name="server">FQDN of whois server (ex."whois.arin.net") and its TCP port.</param>
+        /// <param name="options">The options for the whois query.</param>
+        /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
+        private static string RawQuery(string query, EndPoint server, IQueryOptions options)
+        {
             var tcpClient = new TcpClient();
 
             try
             {
                 // Async connect
-                var t = tcpClient.ConnectAsync(server, port);
+                var t = tcpClient.ConnectAsync(server.Host, server.Port);
                 t.ConfigureAwait(false);
 
                 // Wait at most timeout
-                var success = t.Wait(TimeSpan.FromSeconds(timeout));
+                var success = t.Wait(TimeSpan.FromSeconds(options.Timeout));
 
                 if (!success)
                 {
@@ -247,7 +290,7 @@ namespace Whois.NET
             {
                 Thread.Sleep(200);
 
-                if (rethrowExceptions)
+                if (options.RethrowExceptions)
                     throw;
 
                 return string.Empty;
@@ -259,8 +302,8 @@ namespace Whois.NET
                 using (var s = tcpClient.GetStream())
                 {
                     // Specify the timeouts in milliseconds
-                    s.WriteTimeout = timeout * 1000;
-                    s.ReadTimeout = timeout * 1000;
+                    s.WriteTimeout = options.Timeout * 1000;
+                    s.ReadTimeout = options.Timeout * 1000;
 
                     var queryBytes = Encoding.ASCII.GetBytes(query + "\r\n");
                     s.Write(queryBytes, 0, queryBytes.Length);
@@ -272,7 +315,7 @@ namespace Whois.NET
                     do
                     {
                         cbRead = s.Read(readBuff, 0, readBuff.Length);
-                        res.Append(encoding.GetString(readBuff, 0, cbRead));
+                        res.Append(options.Encoding.GetString(readBuff, 0, cbRead));
                         if (cbRead > 0 || res.Length == 0) Thread.Sleep(100);
                     } while (cbRead > 0 || res.Length == 0);
 
@@ -284,7 +327,7 @@ namespace Whois.NET
                 tcpClient.Close();
                 Thread.Sleep(200);
 
-                if (rethrowExceptions)
+                if (options.RethrowExceptions)
                     throw;
 
                 return res.ToString();
@@ -304,26 +347,56 @@ namespace Whois.NET
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
         /// <param name="timeout">A timespan to limit the connection attempt, in seconds.  Function returns empty string if it times out.</param>
-        /// <param name="rethrowExceptions">Rethrow any caught exceptions instead of swallowing them</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
+        [Obsolete("Use the 'RawQueryAsync(string query, WhoisQueryOptions options, CancellationToken token)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static async Task<string> RawQueryAsync(string query, string server, int port = 43,
-            Encoding encoding = null, int timeout = 600, bool rethrowExceptions = false, CancellationToken token = default(CancellationToken))
+            Encoding encoding = null, int timeout = 600, CancellationToken token = default(CancellationToken))
         {
-            encoding = encoding ?? Encoding.ASCII;
+            var options = new WhoisQueryOptions();
+            options.Server = server;
+            options.Port = port;
+            options.Encoding = encoding ?? options.Encoding;
+            options.Timeout = timeout;
+            return await RawQueryAsync(query, new EndPoint(options.Server, options.Port), options, token).ConfigureAwait(false);
+        }
 
+        /// <summary>
+        /// Send simple WHOIS query to WHOIS server, and return the response from WHOIS server.
+        /// (No re-query to referral servers, and No parse the result of query.)
+        /// </summary>
+        /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
+        /// <param name="options">The options for the whois query.</param>
+        /// <param name="token">The token to monitor for cancellation requests.</param>
+        /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
+        public static async Task<string> RawQueryAsync(string query, WhoisQueryOptions options, CancellationToken token = default(CancellationToken))
+        {
+            return await RawQueryAsync(query, new EndPoint(options.Server, options.Port), options, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Send simple WHOIS query to WHOIS server, and return the response from WHOIS server.
+        /// (No re-query to referral servers, and No parse the result of query.)
+        /// </summary>
+        /// <param name="query">domain name (ex."nic.ad.jp")or IP address (ex."192.41.192.40") to be queried.</param>
+        /// <param name="server">FQDN of whois server (ex."whois.arin.net") and its TCP port.</param>
+        /// <param name="options">The options for the whois query.</param>
+        /// <param name="token">The token to monitor for cancellation requests.</param>
+        /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
+        private static async Task<string> RawQueryAsync(string query, EndPoint server, IQueryOptions options, CancellationToken token)
+        {
             var tcpClient = new TcpClient();
 
             // Async connect
             try
             {
-                await tcpClient.ConnectAsync(server, port).ConfigureAwait(false);
+                await tcpClient.ConnectAsync(server.Host, server.Port).ConfigureAwait(false);
             }
             catch (SocketException)
             {
                 await Task.Delay(200).ConfigureAwait(false);
 
-                if (rethrowExceptions)
+                if (options.RethrowExceptions)
                     throw;
 
                 return string.Empty;
@@ -335,8 +408,8 @@ namespace Whois.NET
                 using (var s = tcpClient.GetStream())
                 {
                     // Specify the timeouts in milliseconds
-                    s.WriteTimeout = timeout * 1000;
-                    s.ReadTimeout = timeout * 1000;
+                    s.WriteTimeout = options.Timeout * 1000;
+                    s.ReadTimeout = options.Timeout * 1000;
 
                     var queryBytes = Encoding.ASCII.GetBytes(query + "\r\n");
                     await s.WriteAsync(queryBytes, 0, queryBytes.Length, token).ConfigureAwait(false);
@@ -348,7 +421,7 @@ namespace Whois.NET
                     do
                     {
                         cbRead = await s.ReadAsync(readBuff, 0, Math.Min(buffSize, tcpClient.Available), token).ConfigureAwait(false);
-                        res.Append(encoding.GetString(readBuff, 0, cbRead));
+                        res.Append(options.Encoding.GetString(readBuff, 0, cbRead));
                         if (cbRead > 0 || res.Length == 0) await Task.Delay(100, token).ConfigureAwait(false);
                     } while (cbRead > 0 || res.Length == 0);
 
@@ -360,7 +433,7 @@ namespace Whois.NET
                 tcpClient.Close();
                 await Task.Delay(200).ConfigureAwait(false);
 
-                if (rethrowExceptions)
+                if (options.RethrowExceptions)
                     throw;
 
                 return res.ToString();

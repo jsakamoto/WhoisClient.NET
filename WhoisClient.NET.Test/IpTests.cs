@@ -22,7 +22,7 @@ public class IpTests
     [TestCaseSource(nameof(IpTestCases))]
     public void WhoisClientTest(string ip, string expectedOrgName, string expectedAddressRange)
     {
-        var response = WhoisClient.Query(ip);
+        var response = WhoisClient.Query(ip, new WhoisQueryOptions());
         response.OrganizationName.Is(expectedOrgName);
         response.AddressRange.ToString().Is(expectedAddressRange);
     }
@@ -31,7 +31,7 @@ public class IpTests
     [TestCaseSource(nameof(IpTestCases))]
     public async Task WhoisClientAsyncTest(string ip, string expectedOrgName, string expectedAddressRange)
     {
-        var response = await WhoisClient.QueryAsync(ip);
+        var response = await WhoisClient.QueryAsync(ip, new WhoisQueryOptions());
         response.OrganizationName.Is(expectedOrgName);
         response.AddressRange.ToString().Is(expectedAddressRange);
     }
@@ -39,7 +39,7 @@ public class IpTests
     [Test]
     public void RawQuery_InvalidWhoisServerSpecified_TransportExceptionSwallowed()
     {
-        var response = WhoisClient.RawQuery("4.4.4.4", server: "unknown.server.pp");
+        var response = WhoisClient.RawQuery("4.4.4.4", new WhoisQueryOptions { Server = "unknown.server.pp" });
 
         response.Is(string.Empty);
     }
@@ -47,7 +47,11 @@ public class IpTests
     [Test]
     public void RawQuery_InvalidWhoisServerSpecified_TransportExceptionRethrown()
     {
-        TestDelegate action = () => WhoisClient.RawQuery("4.4.4.4", server: "unknown.server.pp", rethrowExceptions: true);
+        TestDelegate action = () => WhoisClient.RawQuery("4.4.4.4", new WhoisQueryOptions
+        {
+            Server = "unknown.server.pp",
+            RethrowExceptions = true
+        });
 
         var exception = Assert.Throws<AggregateException>(action)!;
         exception.InnerException.IsInstanceOf<SocketException>();
@@ -56,7 +60,11 @@ public class IpTests
     [Test]
     public void Query_With3Retries_InvalidWhoisServerSpecified_TransportExceptionSwallowed()
     {
-        var response = WhoisClient.Query("4.4.4.4", server: "unknown.server.pp", retries: 3);
+        var response = WhoisClient.Query("4.4.4.4", new WhoisQueryOptions
+        {
+            Server = "unknown.server.pp",
+            Retries = 3
+        });
 
         response.Raw.Is(string.Empty);
     }
@@ -64,7 +72,12 @@ public class IpTests
     [Test]
     public void Query_With3Retries_InvalidWhoisServerSpecified_TransportExceptionRethrown()
     {
-        TestDelegate action = () => WhoisClient.Query("4.4.4.4", server: "unknown.server.pp", retries: 3, rethrowExceptions: true);
+        TestDelegate action = () => WhoisClient.Query("4.4.4.4", new WhoisQueryOptions
+        {
+            Server = "unknown.server.pp",
+            Retries = 3,
+            RethrowExceptions = true
+        });
 
         var exception = Assert.Throws<AggregateException>(action)!;
         exception.InnerException.IsInstanceOf<SocketException>();
@@ -73,7 +86,7 @@ public class IpTests
     [Test]
     public async Task RawQueryAsync_InvalidWhoisServerSpecified_TransportExceptionSwallowed()
     {
-        var response = await WhoisClient.RawQueryAsync("4.4.4.4", server: "unknown.server.pp");
+        var response = await WhoisClient.RawQueryAsync("4.4.4.4", new WhoisQueryOptions { Server = "unknown.server.pp" });
 
         response.Is(string.Empty);
     }
@@ -81,7 +94,11 @@ public class IpTests
     [Test]
     public void RawQueryAsync_InvalidWhoisServerSpecified_TransportExceptionRethrown()
     {
-        AsyncTestDelegate action = () => WhoisClient.RawQueryAsync("4.4.4.4", server: "unknown.server.pp", rethrowExceptions: true);
+        AsyncTestDelegate action = () => WhoisClient.RawQueryAsync("4.4.4.4", new WhoisQueryOptions
+        {
+            Server = "unknown.server.pp",
+            RethrowExceptions = true
+        });
 
         Assert.ThrowsAsync<SocketException>(action);
     }
@@ -89,7 +106,11 @@ public class IpTests
     [Test]
     public async Task QueryAsync_With3Retries_InvalidWhoisServerSpecified_TransportExceptionSwallowed()
     {
-        var response = await WhoisClient.QueryAsync("4.4.4.4", server: "unknown.server.pp", retries: 3);
+        var response = await WhoisClient.QueryAsync("4.4.4.4", new WhoisQueryOptions
+        {
+            Server = "unknown.server.pp",
+            Retries = 3
+        });
 
         response.Raw.Is(string.Empty);
     }
@@ -97,8 +118,12 @@ public class IpTests
     [Test]
     public void QueryAsync_With3Retries_InvalidWhoisServerSpecified_TransportExceptionRethrown()
     {
-        AsyncTestDelegate action = () => WhoisClient.QueryAsync(
-            "4.4.4.4", server: "unknown.server.pp", retries: 3, rethrowExceptions: true);
+        AsyncTestDelegate action = () => WhoisClient.QueryAsync("4.4.4.4", new WhoisQueryOptions
+        {
+            Server = "unknown.server.pp",
+            Retries = 3,
+            RethrowExceptions = true
+        });
 
         Assert.ThrowsAsync<SocketException>(action);
     }
