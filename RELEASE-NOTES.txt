@@ -1,4 +1,4 @@
-v.5.0.1
+v.5.1.0
 - Added parsing of alternative JPNIC response format (without key letters)
 - Fixed tests
 - Added ability to rethrow transport exceptions that've occurred during WHOIS request instead of swallowing them
