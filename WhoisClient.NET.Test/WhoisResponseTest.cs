@@ -17,6 +17,18 @@ public class WhoisResponseTest
         "m. [管理者連絡窓口]             HH11825JP\r\n" +
         "n. [技術連絡担当者]             MO5920JP\r\n";
 
+    private readonly string ResponseJPWithoutKeyLetters =
+        "Network Information: [ネットワーク情報]\r\n" +
+        "[IPネットワークアドレス]        27.80.0.0/12\r\n" +
+        "[ネットワーク名]\r\n" +
+        "[組織名]                        KDDI株式会社\r\n" +
+        "[Organization]                  KDDI CORPORATION\r\n" +
+        "[管理者連絡窓口]                JP00000127\r\n" +
+        "[技術連絡担当者]                JP00000181\r\n" +
+        "[Abuse]                         abuse@dion.ne.jp\r\n" +
+        "[割振年月日]                    2010/04/28\r\n" +
+        "[最終更新]                      2010/04/28 10:50:55(JST)\r\n";
+
     [Test]
     public void OrganizationNameTest_JP()
     {
@@ -25,11 +37,28 @@ public class WhoisResponseTest
     }
 
     [Test]
+    public void OrganizationNameTest_JP_WithoutKeyLetters()
+    {
+        new WhoisResponse(null, this.ResponseJPWithoutKeyLetters)
+            .OrganizationName.Is("KDDI株式会社");
+    }
+
+    [Test]
     public void AddressRangeTest_JP()
     {
         var r = new WhoisResponse(null, this.ResponseJP);
+        r.AddressRange.IsNotNull();
         r.AddressRange.Begin.ToString().Is("192.41.192.0");
         r.AddressRange.End.ToString().Is("192.41.192.255");
+    }
+
+    [Test]
+    public void AddressRangeTest_JP_WithoutKeyLetters()
+    {
+        var r = new WhoisResponse(null, this.ResponseJPWithoutKeyLetters);
+        r.AddressRange.IsNotNull();
+        r.AddressRange.Begin.ToString().Is("27.80.0.0");
+        r.AddressRange.End.ToString().Is("27.95.255.255");
     }
 
     private readonly string ResponseEN1 =
@@ -120,7 +149,7 @@ public class WhoisResponseTest
     [Test]
     public void RespondedServersTest()
     {
-        var WR = WhoisClient.Query("150.126.0.0");
+        var WR = WhoisClient.Query("150.126.0.0", new WhoisQueryOptions());
         WR.RespondedServers.Length.Is(3);
     }
 
