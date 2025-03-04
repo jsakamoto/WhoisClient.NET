@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Whois.NET
@@ -11,7 +12,10 @@ namespace Whois.NET
         private DefaultTcpConnector()
         { }
 
-        public async Task<TcpClient> ConnectAsync(string server, int port)
+        public async Task<TcpClient> ConnectAsync(
+            string server, 
+            int port,
+            CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(server))
             {

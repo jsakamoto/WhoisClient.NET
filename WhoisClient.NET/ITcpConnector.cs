@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Whois.NET
@@ -13,7 +14,8 @@ namespace Whois.NET
         /// </summary>
         /// <param name="server">Server hostname or address</param>
         /// <param name="port">TCP port</param>
+        /// <param name="cancellationToken"></param>
         /// <returns><see cref="TcpClient"/> connected to the specified endpoint</returns>
-        Task<TcpClient> ConnectAsync(string server, int port);
+        Task<TcpClient> ConnectAsync(string server, int port, CancellationToken cancellationToken = default);
     }
 }
