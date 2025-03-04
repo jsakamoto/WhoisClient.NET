@@ -9,7 +9,7 @@
     <AssemblyName>WhoisClient</AssemblyName>
     <Product>WhoisClient.NET</Product>
     <Authors>J.Sakamoto, Keith J. Jones, Martijn Storck, Makaopior</Authors>
-    <Version>5.1.0</Version>
+    <Version>5.2.0</Version>
     <Copyright>Copyright 2012-2025 J.Sakamoto; 2016 Keith J. Jones; 2023 Martijn Storck; 2025 Makaopior; Ms-PL License.</Copyright>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/jsakamoto/WhoisClient.NET/</PackageProjectUrl>
