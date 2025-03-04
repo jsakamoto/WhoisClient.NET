@@ -392,7 +392,7 @@ namespace Whois.NET
             // Async connect
             try
             {
-                tcpClient = await options.TcpConnector.ConnectAsync(server.Host, server.Port)
+                tcpClient = await options.TcpConnector.ConnectAsync(server.Host, server.Port, token)
                     .ConfigureAwait(false);
             }
             catch (SocketException)
