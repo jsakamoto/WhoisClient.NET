@@ -298,7 +298,7 @@ namespace Whois.NET
                 return string.Empty;
             }
 
-            var res = new StringBuilder();
+            var responseBytes = new List<byte>(4096);
             try
             {
                 using (var s = tcpClient.GetStream())
@@ -317,12 +317,12 @@ namespace Whois.NET
                     do
                     {
                         cbRead = s.Read(readBuff, 0, readBuff.Length);
-                        res.Append(options.Encoding.GetString(readBuff, 0, cbRead));
+                        responseBytes.AddRange(readBuff.Take(cbRead));
                         if (cbRead > 0) 
                             Thread.Sleep(100);
                     } while (cbRead > 0);
 
-                    return res.ToString();
+                    return options.Encoding.GetString(responseBytes.ToArray());
                 }
             }
             catch
@@ -333,7 +333,7 @@ namespace Whois.NET
                 if (options.RethrowExceptions)
                     throw;
 
-                return res.ToString();
+                return options.Encoding.GetString(responseBytes.ToArray());
             }
             finally
             {
@@ -406,7 +406,7 @@ namespace Whois.NET
                 return string.Empty;
             }
 
-            var res = new StringBuilder();
+            var responseBytes = new List<byte>(4096);
             try
             {
                 using (var s = tcpClient.GetStream())
@@ -425,12 +425,12 @@ namespace Whois.NET
                     do
                     {
                         cbRead = await s.ReadAsync(readBuff, 0, buffSize, token).ConfigureAwait(false);
-                        res.Append(options.Encoding.GetString(readBuff, 0, cbRead));
+                        responseBytes.AddRange(readBuff.Take(cbRead));
                         if (cbRead > 0) 
                             await Task.Delay(100, token).ConfigureAwait(false);
                     } while (cbRead > 0);
 
-                    return res.ToString();
+                    return options.Encoding.GetString(responseBytes.ToArray());
                 }
             }
             catch (Exception)
@@ -441,7 +441,7 @@ namespace Whois.NET
                 if (options.RethrowExceptions)
                     throw;
 
-                return res.ToString();
+                return options.Encoding.GetString(responseBytes.ToArray());
             }
             finally
             {
