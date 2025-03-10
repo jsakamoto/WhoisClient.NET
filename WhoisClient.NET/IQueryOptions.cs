@@ -23,5 +23,10 @@ namespace Whois.NET
         /// Gets whether rethrow any caught exceptions instead of swallowing them. The default value is false.
         /// </summary>
         bool RethrowExceptions { get; }
+
+        /// <summary>
+        /// Gets or sets connection manager instance. Replace it if you need to create a connection in specific way, for example, over SOCKS proxy.
+        /// </summary>
+        ITcpConnector TcpConnector { get; }
     }
 }

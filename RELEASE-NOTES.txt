@@ -1,3 +1,9 @@
+v.5.3.0
+- Fixed potential infinite loop in socket reading method
+
+v.5.2.0
+- Moved TcpClient creation to separate class, enabling usage in special cases like flowing traffic through SOCKS proxy
+
 v.5.1.0
 - Added parsing of alternative JPNIC response format (without key letters)
 - Fixed tests

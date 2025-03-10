@@ -269,18 +269,20 @@ namespace Whois.NET
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         private static string RawQuery(string query, EndPoint server, IQueryOptions options)
         {
-            var tcpClient = new TcpClient();
+            TcpClient tcpClient;
 
             try
             {
                 // Async connect
-                var t = tcpClient.ConnectAsync(server.Host, server.Port);
-                t.ConfigureAwait(false);
+                var tcpClientTask = options.TcpConnector.ConnectAsync(server.Host, server.Port);
+                tcpClientTask.ConfigureAwait(false);
 
                 // Wait at most timeout
-                var success = t.Wait(TimeSpan.FromSeconds(options.Timeout));
+                var success = tcpClientTask.Wait(TimeSpan.FromSeconds(options.Timeout));
 
-                if (!success)
+                if (success)
+                    tcpClient = tcpClientTask.GetAwaiter().GetResult();
+                else
                 {
                     Thread.Sleep(200);
                     return string.Empty;
@@ -316,8 +318,9 @@ namespace Whois.NET
                     {
                         cbRead = s.Read(readBuff, 0, readBuff.Length);
                         res.Append(options.Encoding.GetString(readBuff, 0, cbRead));
-                        if (cbRead > 0 || res.Length == 0) Thread.Sleep(100);
-                    } while (cbRead > 0 || res.Length == 0);
+                        if (cbRead > 0) 
+                            Thread.Sleep(100);
+                    } while (cbRead > 0);
 
                     return res.ToString();
                 }
@@ -385,12 +388,13 @@ namespace Whois.NET
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         private static async Task<string> RawQueryAsync(string query, EndPoint server, IQueryOptions options, CancellationToken token)
         {
-            var tcpClient = new TcpClient();
+            TcpClient tcpClient;
 
             // Async connect
             try
             {
-                await tcpClient.ConnectAsync(server.Host, server.Port).ConfigureAwait(false);
+                tcpClient = await options.TcpConnector.ConnectAsync(server.Host, server.Port, token)
+                    .ConfigureAwait(false);
             }
             catch (SocketException)
             {
@@ -420,10 +424,11 @@ namespace Whois.NET
                     var cbRead = default(int);
                     do
                     {
-                        cbRead = await s.ReadAsync(readBuff, 0, Math.Min(buffSize, tcpClient.Available), token).ConfigureAwait(false);
+                        cbRead = await s.ReadAsync(readBuff, 0, buffSize, token).ConfigureAwait(false);
                         res.Append(options.Encoding.GetString(readBuff, 0, cbRead));
-                        if (cbRead > 0 || res.Length == 0) await Task.Delay(100, token).ConfigureAwait(false);
-                    } while (cbRead > 0 || res.Length == 0);
+                        if (cbRead > 0) 
+                            await Task.Delay(100, token).ConfigureAwait(false);
+                    } while (cbRead > 0);
 
                     return res.ToString();
                 }
