@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Whois.NET
 {
@@ -38,8 +41,9 @@ namespace Whois.NET
         public bool RethrowExceptions { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets connection manager instance. Replace it if you need to create a connection in specific way, for example, over SOCKS proxy.
+        /// Gets or sets the function to create a TCP connection to a whois server asynchronously.<br/>
+        /// Replace it if you need to create a connection in a specific way, for example, over a SOCKS proxy.
         /// </summary>
-        public ITcpConnector TcpConnector { get; set; } = DefaultTcpConnector.Instance;
+        public Func<TcpConnectionArgs, Task<TcpClient>> ConnectAsync { get; set; }
     }
 }

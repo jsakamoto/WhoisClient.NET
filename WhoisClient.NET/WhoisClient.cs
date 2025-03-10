@@ -274,7 +274,7 @@ namespace Whois.NET
             try
             {
                 // Async connect
-                var tcpClientTask = options.TcpConnector.ConnectAsync(server.Host, server.Port);
+                var tcpClientTask = ConnectAsync(server, options);
                 tcpClientTask.ConfigureAwait(false);
 
                 // Wait at most timeout
@@ -318,7 +318,7 @@ namespace Whois.NET
                     {
                         cbRead = s.Read(readBuff, 0, readBuff.Length);
                         res.Append(options.Encoding.GetString(readBuff, 0, cbRead));
-                        if (cbRead > 0) 
+                        if (cbRead > 0)
                             Thread.Sleep(100);
                     } while (cbRead > 0);
 
@@ -393,8 +393,7 @@ namespace Whois.NET
             // Async connect
             try
             {
-                tcpClient = await options.TcpConnector.ConnectAsync(server.Host, server.Port, token)
-                    .ConfigureAwait(false);
+                tcpClient = await ConnectAsync(server, options, token).ConfigureAwait(false);
             }
             catch (SocketException)
             {
@@ -426,7 +425,7 @@ namespace Whois.NET
                     {
                         cbRead = await s.ReadAsync(readBuff, 0, buffSize, token).ConfigureAwait(false);
                         res.Append(options.Encoding.GetString(readBuff, 0, cbRead));
-                        if (cbRead > 0) 
+                        if (cbRead > 0)
                             await Task.Delay(100, token).ConfigureAwait(false);
                     } while (cbRead > 0);
 
@@ -447,6 +446,28 @@ namespace Whois.NET
             {
                 tcpClient.Close();
             }
+        }
+
+        private static readonly Func<TcpConnectionArgs, Task<TcpClient>> DefaultConnectAsync = async args =>
+        {
+            if (string.IsNullOrWhiteSpace(args.Host)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(args.Host));
+            if (args.Port <= 0 || args.Port > ushort.MaxValue) throw new ArgumentOutOfRangeException(nameof(args.Port));
+
+            var tcpClient = new TcpClient();
+            await tcpClient.ConnectAsync(args.Host, args.Port).ConfigureAwait(false);
+            return tcpClient;
+        };
+
+        private static async Task<TcpClient> ConnectAsync(EndPoint server, IQueryOptions options, CancellationToken cancellationToken = default)
+        {
+            var tcpConnectionArgs = new TcpConnectionArgs
+            {
+                Host = server.Host,
+                Port = server.Port,
+                CancellationToken = CancellationToken.None
+            };
+            var connectAsync = options.ConnectAsync != null ? options.ConnectAsync : DefaultConnectAsync;
+            return await connectAsync.Invoke(tcpConnectionArgs).ConfigureAwait(false);
         }
     }
 }
