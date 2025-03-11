@@ -6,6 +6,7 @@ using WhoisClient_NET.Test.Internals;
 
 namespace WhoisClient_NET.Test
 {
+    [Parallelizable(ParallelScope.Children)]
     public class IrregularCaseTests
     {
         [Test]
@@ -68,6 +69,45 @@ namespace WhoisClient_NET.Test
 
             // Then: the response should be empty
             response.Is(string.Empty);
+        }
+
+        [Test]
+        public async Task Default_Timeout_Test()
+        {
+            // Given: a server that never shuts down
+            using var server = new MockServer((client, token) => Task.Delay(int.MaxValue, token));
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 5000);
+            var response = await Task.Run(() =>
+                WhoisClient.RawQuery("example.jp", options: new()
+                {
+                    Server = "localhost",
+                    Port = server.Port,
+                }), cts.Token);
+
+            // Then: the response should be empty
+            response.Is(string.Empty);
+            cts.Token.IsCancellationRequested.IsFalse();
+        }
+
+        [Test]
+        public async Task Default_Timeout_Async_Test()
+        {
+            // Given: a server that never shuts down
+            using var server = new MockServer((client, token) => Task.Delay(int.MaxValue, token));
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 5000);
+            var response = await WhoisClient.RawQueryAsync("example.jp", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port,
+            }, cts.Token);
+
+            // Then: the response should be empty
+            response.Is(string.Empty);
+            cts.Token.IsCancellationRequested.IsFalse();
         }
     }
 }
