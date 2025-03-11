@@ -46,5 +46,28 @@ namespace WhoisClient_NET.Test
             // Then: the response should be the same as the server's response
             response.Is("こちらはテスト文字列である");
         }
+
+        [Test]
+        public async Task Abort_Before_Respond_Anything_Test()
+        {
+            // Given: a server that does not respond
+            using var server = new MockServer(async (client, token) =>
+            {
+                client.Client.Shutdown(SocketShutdown.Send);
+                await Task.Delay(int.MaxValue, token);
+            });
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 3000);
+            var response = await WhoisClient.RawQueryAsync("example.jp", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port,
+                RethrowExceptions = true
+            }, cts.Token);
+
+            // Then: the response should be empty
+            response.Is(string.Empty);
+        }
     }
 }
