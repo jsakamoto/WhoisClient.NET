@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Sockets;
+using System.Text;
 using NUnit.Framework;
 using Whois.NET;
 using WhoisClient_NET.Test.Internals;
@@ -21,20 +22,26 @@ namespace WhoisClient_NET.Test
                 var lastHalfLength = responseBytes.Length - firstHalfLength;
 
                 // Send the first half of the response
-                var stream = client.GetStream();
-                await stream.WriteAsync(responseBytes, 0, firstHalfLength, token);
-                await stream.FlushAsync(token);
+                client.Client.Send(responseBytes.Take(firstHalfLength).ToArray());
                 await Task.Delay(100, token);
 
                 // Send the left of the response
-                await stream.WriteAsync(responseBytes, firstHalfLength, lastHalfLength, token);
-                await stream.FlushAsync(token);
+                client.Client.Send(responseBytes.Skip(firstHalfLength).ToArray());
                 await Task.Delay(100, token);
+
+                // Shutdown the sending connection
+                client.Client.Shutdown(SocketShutdown.Send);
+                await Task.Delay(int.MaxValue, token);
             });
 
             // When: a query is made to the server
-            var options = new WhoisQueryOptions { Server = "localhost", Port = server.Port, Encoding = Encoding.GetEncoding("iso-2022-jp") };
-            var response = await WhoisClient.RawQueryAsync("example.jp", options);
+            var response = await WhoisClient.RawQueryAsync("example.jp", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port,
+                Encoding = Encoding.GetEncoding("iso-2022-jp"),
+                RethrowExceptions = true
+            });
 
             // Then: the response should be the same as the server's response
             response.Is("こちらはテスト文字列である");
