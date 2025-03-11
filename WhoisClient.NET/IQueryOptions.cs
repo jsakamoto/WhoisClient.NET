@@ -13,7 +13,7 @@ namespace Whois.NET
         Encoding Encoding { get; }
 
         /// <summary>
-        /// Gets a timespan to limit the connection attempt, in seconds. The default value is 600 seconds.
+        /// Gets a timespan to limit the connection attempt, in milliseconds. The default value is 2000 msec.
         /// </summary>
         int Timeout { get; }
 

@@ -26,9 +26,9 @@ namespace Whois.NET
         public Encoding Encoding { get; set; } = Encoding.ASCII;
 
         /// <summary>
-        /// Gets or sets a timespan to limit the connection attempt, in seconds. The default value is 600 seconds.
+        /// Gets or sets a timespan to limit the connection attempt, in milliseconds. The default value is 2000 msec.
         /// </summary>
-        public int Timeout { get; set; } = 600;
+        public int Timeout { get; set; } = 2000;
 
         /// <summary>
         /// Gets or sets the number of times a connection will be attempted. The default value is 10.

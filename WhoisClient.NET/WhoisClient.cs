@@ -33,12 +33,12 @@ namespace Whois.NET
         /// <param name="server">FQDN of whois server (ex."whois.arin.net"). This parameter is optional (default value is null) to determine server automatically.</param>
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
-        /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
+        /// <param name="timeout">A timespan to limit the connection attempt, in milliseconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         [Obsolete("Use the 'Query(string query, WhoisQueryOptions options)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static WhoisResponse Query(string query, string server = null, int port = 43,
-            Encoding encoding = null, int timeout = 600, int retries = 10)
+            Encoding encoding = null, int timeout = 2000, int retries = 10)
         {
             var options = new WhoisQueryOptions();
             options.Server = !string.IsNullOrEmpty(server) ? server : options.Server;
@@ -70,13 +70,13 @@ namespace Whois.NET
         /// <param name="server">FQDN of whois server (ex."whois.arin.net"). This parameter is optional (default value is null) to determine server automatically.</param>
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
-        /// <param name="timeout">A timespan to limit the connection attempt, in seconds.</param>
+        /// <param name="timeout">A timespan to limit the connection attempt, in milliseconds.</param>
         /// <param name="retries">The number of times a connection will be attempted.</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         [Obsolete("Use the 'QueryAsync(string query, WhoisQueryOptions options, CancellationToken token)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static async Task<WhoisResponse> QueryAsync(string query, string server = null, int port = 43,
-            Encoding encoding = null, int timeout = 600, int retries = 10, CancellationToken token = default(CancellationToken))
+            Encoding encoding = null, int timeout = 2000, int retries = 10, CancellationToken token = default(CancellationToken))
         {
             var options = new WhoisQueryOptions();
             options.Server = !string.IsNullOrEmpty(server) ? server : options.Server;
@@ -234,10 +234,10 @@ namespace Whois.NET
         /// <param name="server">FQDN of whois server (ex."whois.arin.net").</param>
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
-        /// <param name="timeout">A timespan to limit the connection attempt, in seconds.  Function returns empty string if it times out.</param>
+        /// <param name="timeout">A timespan to limit the connection attempt, in milliseconds.  Function returns empty string if it times out.</param>
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         [Obsolete("Use the 'RawQuery(string query, WhoisQueryOptions options)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
-        public static string RawQuery(string query, string server, int port = 43, Encoding encoding = null, int timeout = 600)
+        public static string RawQuery(string query, string server, int port = 43, Encoding encoding = null, int timeout = 2000)
         {
             var options = new WhoisQueryOptions();
             options.Server = server;
@@ -304,8 +304,8 @@ namespace Whois.NET
                 using (var s = tcpClient.GetStream())
                 {
                     // Specify the timeouts in milliseconds
-                    s.WriteTimeout = options.Timeout * 1000;
-                    s.ReadTimeout = options.Timeout * 1000;
+                    s.WriteTimeout = options.Timeout;
+                    s.ReadTimeout = options.Timeout;
 
                     var queryBytes = Encoding.ASCII.GetBytes(query + "\r\n");
                     s.Write(queryBytes, 0, queryBytes.Length);
@@ -349,12 +349,12 @@ namespace Whois.NET
         /// <param name="server">FQDN of whois server (ex."whois.arin.net").</param>
         /// <param name="port">TCP port number to connect whois server. This parameter is optional, and default value is 43.</param>
         /// <param name="encoding">Encoding method to decode the result of query. This parameter is optional (default value is null) to using ASCII encoding.</param>
-        /// <param name="timeout">A timespan to limit the connection attempt, in seconds.  Function returns empty string if it times out.</param>
+        /// <param name="timeout">A timespan to limit the connection attempt, in milliseconds.  Function returns empty string if it times out.</param>
         /// <param name="token">The token to monitor for cancellation requests.</param>
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         [Obsolete("Use the 'RawQueryAsync(string query, WhoisQueryOptions options, CancellationToken token)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static async Task<string> RawQueryAsync(string query, string server, int port = 43,
-            Encoding encoding = null, int timeout = 600, CancellationToken token = default(CancellationToken))
+            Encoding encoding = null, int timeout = 2000, CancellationToken token = default(CancellationToken))
         {
             var options = new WhoisQueryOptions();
             options.Server = server;
@@ -410,23 +410,25 @@ namespace Whois.NET
             {
                 using (var s = tcpClient.GetStream())
                 {
-                    // Specify the timeouts in milliseconds
-                    s.WriteTimeout = options.Timeout * 1000;
-                    s.ReadTimeout = options.Timeout * 1000;
-
-                    var queryBytes = Encoding.ASCII.GetBytes(query + "\r\n");
-                    await s.WriteAsync(queryBytes, 0, queryBytes.Length, token).ConfigureAwait(false);
-                    await s.FlushAsync(token).ConfigureAwait(false);
+                    await InvokeAsync(async (cancellationToken) =>
+                    {
+                        var queryBytes = Encoding.ASCII.GetBytes(query + "\r\n");
+                        await s.WriteAsync(queryBytes, 0, queryBytes.Length, cancellationToken).ConfigureAwait(false);
+                        await s.FlushAsync(cancellationToken).ConfigureAwait(false);
+                    }, options.Timeout, token);
 
                     const int buffSize = 8192;
                     var readBuff = new byte[buffSize];
                     var cbRead = default(int);
                     do
                     {
-                        cbRead = await s.ReadAsync(readBuff, 0, buffSize, token).ConfigureAwait(false);
-                        responseBytes.AddRange(readBuff.Take(cbRead));
-                        if (cbRead > 0)
-                            await Task.Delay(100, token).ConfigureAwait(false);
+                        await InvokeAsync(async (cancellationToken) =>
+                        {
+                            cbRead = await s.ReadAsync(readBuff, 0, buffSize, cancellationToken).ConfigureAwait(false);
+                            responseBytes.AddRange(readBuff.Take(cbRead));
+                            if (cbRead > 0)
+                                await Task.Delay(100, cancellationToken).ConfigureAwait(false);
+                        }, options.Timeout, token);
                     } while (cbRead > 0);
 
                     return options.Encoding.GetString(responseBytes.ToArray());
@@ -445,6 +447,36 @@ namespace Whois.NET
             finally
             {
                 tcpClient.Close();
+            }
+        }
+
+        /// <summary>
+        /// Invoke an asynchronous action with a timeout and cancellation token.
+        /// </summary>
+        /// <param name="action">An asynchronous action to invoke.</param>
+        /// <param name="timeout">A timeout in milliseconds.</param>
+        /// <param name="token">A cancellation token.</param>
+        /// <remarks>
+        /// On the .NET Framework 4.6.2, a cancellation token won't work in the NetworkStream.SendAsync and ReadAsync method.
+        /// To avoid this issue, we use the combination of Task.Delay and Task.WhenAny to simulate a cancellation token.
+        /// </remarks>
+        private static async Task InvokeAsync(Func<CancellationToken, Task> action, int timeout, CancellationToken token)
+        {
+            using (var timeoutCancellation = new CancellationTokenSource(millisecondsDelay: timeout))
+            using (var linked = CancellationTokenSource.CreateLinkedTokenSource(token, timeoutCancellation.Token))
+            {
+#if NETCOREAPP
+                await action(linked.Token);
+#else
+                var mainTask = action(linked.Token);
+                var timeoutTask = Task.Delay(Timeout.Infinite, timeoutCancellation.Token);
+                var cancellationTask = Task.Delay(Timeout.Infinite, token);
+
+                var firstCompletedTask = await Task.WhenAny(mainTask, timeoutTask, cancellationTask);
+
+                if (firstCompletedTask == timeoutTask) throw new TimeoutException();
+                if (firstCompletedTask == cancellationTask) token.ThrowIfCancellationRequested();
+#endif
             }
         }
 
