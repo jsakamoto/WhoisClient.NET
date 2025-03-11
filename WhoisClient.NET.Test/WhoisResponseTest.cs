@@ -29,6 +29,25 @@ public class WhoisResponseTest
         "[割振年月日]                    2010/04/28\r\n" +
         "[最終更新]                      2010/04/28 10:50:55(JST)\r\n";
 
+    private readonly string ResponseJPWithIPv6 =
+        "Network Information: [ネットワーク情報]\r\n" +
+        "[IPネットワークアドレス]        2001:0dc2::/32\r\n" +
+        "[ネットワーク名]                JPNIC-NET-JP-20030529\r\n" +
+        "[組織名]                        一般社団法人日本ネットワークインフォメーションセンター\r\n" +
+        "[Organization]                  Japan Network Information Center\r\n" +
+        "[管理者連絡窓口]                SS54384JP\r\n" +
+        "[技術連絡担当者]                YK11438JP\r\n" +
+        "[技術連絡担当者]                EK6175JP\r\n" +
+        "[技術連絡担当者]                TK74577JP\r\n" +
+        "[技術連絡担当者]                NH27225JP\r\n" +
+        "[技術連絡担当者]                KG13714JP\r\n" +
+        "[Abuse]\r\n" +
+        "[ネームサーバ]                  ns3.nic.ad.jp\r\n" +
+        "[ネームサーバ]                  ns5.nic.ad.jp\r\n" +
+        "[割当年月日]                    2003/05/29\r\n" +
+        "[返却年月日]\r\n" +
+        "[最終更新]                      2023/06/19 16:44:03(JST)\r\n";
+
     [Test]
     public void OrganizationNameTest_JP()
     {
@@ -41,6 +60,13 @@ public class WhoisResponseTest
     {
         new WhoisResponse(null, this.ResponseJPWithoutKeyLetters)
             .OrganizationName.Is("KDDI株式会社");
+    }
+
+    [Test]
+    public void OrganizationNameTest_JP_WithIPv6()
+    {
+        new WhoisResponse(null, this.ResponseJPWithIPv6)
+            .OrganizationName.Is("一般社団法人日本ネットワークインフォメーションセンター");
     }
 
     [Test]
@@ -59,6 +85,15 @@ public class WhoisResponseTest
         r.AddressRange.IsNotNull();
         r.AddressRange.Begin.ToString().Is("27.80.0.0");
         r.AddressRange.End.ToString().Is("27.95.255.255");
+    }
+
+    [Test]
+    public void AddressRangeTest_JP_WithIPv6()
+    {
+        var r = new WhoisResponse(null, this.ResponseJPWithIPv6);
+        r.AddressRange.IsNotNull();
+        r.AddressRange.Begin.ToString().Is("2001:dc2::");
+        r.AddressRange.End.ToString().Is("2001:dc2:ffff:ffff:ffff:ffff:ffff:ffff");
     }
 
     private readonly string ResponseEN1 =
@@ -81,8 +116,53 @@ public class WhoisResponseTest
     public void AddressRangeTest_EN1()
     {
         var r = new WhoisResponse(null, this.ResponseEN1);
+        r.AddressRange.IsNotNull();
         r.AddressRange.Begin.ToString().Is("192.41.192.0");
         r.AddressRange.End.ToString().Is("192.41.192.255");
+    }
+
+    private readonly string ResponseENApnicWithIPv6 =
+        "% Whois data copyright terms    http://www.apnic.net/db/dbcopyright.html\r\n" +
+        "\r\n" +
+        "% Information related to '2001:dc2::/32'\r\n" +
+        "\r\n" +
+        "% No abuse contact registered for 2001:dc2::/32\r\n" +
+        "\r\n" +
+        "inet6num:       2001:dc2::/32\r\n" +
+        "netname:        JPNIC-NET-JP-20030529\r\n" +
+        "descr:          Japan Network Information Center\r\n" +
+        "country:        JP\r\n" +
+        "admin-c:        JNIC1-AP\r\n" +
+        "tech-c:         JNIC1-AP\r\n" +
+        "mnt-by:         MAINT-JPNIC\r\n" +
+        "remarks:        JPNIC Allocation Block\r\n" +
+        "remarks:        Authoritative information regarding assignments and\r\n" +
+        "remarks:        allocations made from within this block can also be\r\n" +
+        "remarks:        queried at whois.nic.ad.jp. To obtain an English\r\n" +
+        "remarks:        output query whois -h whois.nic.ad.jp x.x.x.x/e\r\n" +
+        "remarks:        *****************************************************\r\n" +
+        "remarks:        For abuse/any contacts regarding this address range,\r\n" +
+        "remarks:        please refer to the contacts listed on the inet6num\r\n" +
+        "remarks:        object displayed down below, or look up JPNIC Whois.\r\n" +
+        "remarks:        ****************************************************\r\n" +
+        "status:         ASSIGNED PORTABLE\r\n" +
+        "last-modified:  2008-09-04T06:49:18Z\r\n" +
+        "source:         APNIC\r\n";
+
+    [Test]
+    public void OrganizationNameTest_EN_Apnic_WithIPv6()
+    {
+        new WhoisResponse(null, this.ResponseENApnicWithIPv6)
+            .OrganizationName.Is("Japan Network Information Center");
+    }
+
+    [Test]
+    public void AddressRangeTest_EN_Apnic_WithIPv6()
+    {
+        var r = new WhoisResponse(null, this.ResponseENApnicWithIPv6);
+        r.AddressRange.IsNotNull();
+        r.AddressRange.Begin.ToString().Is("2001:dc2::");
+        r.AddressRange.End.ToString().Is("2001:dc2:ffff:ffff:ffff:ffff:ffff:ffff");
     }
 
     private readonly string ResponseEN2 =
@@ -144,6 +224,46 @@ public class WhoisResponseTest
     {
         new WhoisResponse(null, this.ResponseEN2)
             .OrganizationName.Is("Asia Pacific Network Information Centre");
+    }
+
+    private readonly string ResponseENArinWithIPv6 =
+        "NetRange:       2001:500:110:: - 2001:500:110:FFFF:FFFF:FFFF:FFFF:FFFF\r\n" +
+        "CIDR:           2001:500:110::/48\r\n" +
+        "NetName:        ARIN-CHA-CHA\r\n" +
+        "NetHandle:      NET6-2001-500-110-1\r\n" +
+        "Parent:         ARIN-001 (NET6-2001-400-0)\r\n" +
+        "NetType:        Direct Allocation\r\n" +
+        "OriginAS:       AS10745\r\n" +
+        "Organization:   ARIN Operations (ARINOPS)\r\n" +
+        "RegDate:        2016-05-10\r\n" +
+        "Updated:        2021-12-14\r\n" +
+        "Ref:            https://rdap.arin.net/registry/ip/2001:500:110::\r\n" +
+        "\r\n" +
+        "OrgName:        ARIN Operations\r\n" +
+        "OrgId:          ARINOPS\r\n" +
+        "Address:        PO Box 232290\r\n" +
+        "City:           Centreville\r\n" +
+        "StateProv:      VA\r\n" +
+        "PostalCode:     20120\r\n" +
+        "Country:        US\r\n" +
+        "RegDate:        2012-09-07\r\n" +
+        "Updated:        2023-04-25\r\n" +
+        "Ref:            https://rdap.arin.net/registry/entity/ARINOPS\r\n";
+
+    [Test]
+    public void OrganizationNameTest_EN_Arin_WithIPv6()
+    {
+        new WhoisResponse(null, this.ResponseENArinWithIPv6)
+            .OrganizationName.Is("ARIN Operations");
+    }
+
+    [Test]
+    public void AddressRangeTest_EN_Arin_WithIPv6()
+    {
+        var r = new WhoisResponse(null, this.ResponseENArinWithIPv6);
+        r.AddressRange.IsNotNull();
+        r.AddressRange.Begin.ToString().Is("2001:500:110::");
+        r.AddressRange.End.ToString().Is("2001:500:110:ffff:ffff:ffff:ffff:ffff");
     }
 
     [Test]
