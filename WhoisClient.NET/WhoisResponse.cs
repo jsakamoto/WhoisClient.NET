@@ -59,13 +59,18 @@ namespace Whois.NET
             this.Raw = rawWhoisResponse;
 
             // resolve Organization Name.
-            var m1 = Regex.Match(this.Raw,
+            var m0 = Regex.Match(this.Raw,
                 @"(^(f\.)?\W*\[組織名\]\W+(?<orgName>[^\r\n]+))|" +
                 @"(^\s*(OrgName|descr|Registrant Organization|owner):\W+(?<orgName>[^\r\n]+))",
                 RegexOptions.Multiline);
-            if (m1.Success)
+            if (m0.Success)
             {
-                this.OrganizationName = m1.Groups["orgName"].Value;
+                this.OrganizationName = m0.Groups["orgName"].Value;
+            }
+            else
+            {
+                var m1 = Regex.Match(this.Raw, @"^\s*(Organization|org-name):\W+(?<orgName>[^\r\n]+)", RegexOptions.Multiline);
+                if (m1.Success) this.OrganizationName = m1.Groups["orgName"].Value;
             }
 
             // resolve Address Range.

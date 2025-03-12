@@ -61,6 +61,67 @@ public class WhoisResponseTest
         r.AddressRange.End.ToString().Is("27.95.255.255");
     }
 
+    [Test]
+    public void ExtraPattern1_Test()
+    {
+        var r = new WhoisResponse(null,
+            "# start\r\n" +
+            "\r\n" +
+            "NetRange:       104.130.0.0 - 104.130.255.255\r\n" +
+            "CIDR:           104.130.0.0/16\r\n" +
+            "NetName:        RACKS-8-NET-16\r\n" +
+            "NetHandle:      NET-104-130-0-0-1\r\n" +
+            "Parent:         NET104 (NET-104-0-0-0-0)\r\n" +
+            "NetType:        Direct Allocation\r\n" +
+            "OriginAS:       AS19994\r\n" +
+            "Organization:   Rackspace Hosting (RACKS-8)\r\n" +
+            "RegDate:        2014-05-19\r\n" +
+            "Updated:        2014-05-19\r\n" +
+            "Ref:            https://rdap.arin.net/registry/ip/104.130.0.0\r\n");
+
+        r.OrganizationName.Is("Rackspace Hosting (RACKS-8)");
+        r.AddressRange.IsNotNull();
+        r.AddressRange.Begin.ToString().Is("104.130.0.0");
+        r.AddressRange.End.ToString().Is("104.130.255.255");
+    }
+
+    [Test]
+    public void ExtraPattern2_Test()
+    {
+        var r = new WhoisResponse(null,
+            "% Abuse contact for '31.90.0.0 - 31.127.255.255' is 'abuse@ee.co.uk'\r\n" +
+            "\r\n" +
+            "inetnum:        31.90.0.0 - 31.127.255.255\r\n" +
+            "organisation:   ORG-TIUL1-RIPE\r\n" +
+            "org-name:       EE Limited\r\n" +
+            "country:        GB\r\n");
+
+        r.OrganizationName.Is("EE Limited");
+        r.AddressRange.IsNotNull();
+        r.AddressRange.Begin.ToString().Is("31.90.0.0");
+        r.AddressRange.End.ToString().Is("31.127.255.255");
+    }
+
+    [Test]
+    public void ExtraPattern3_Test()
+    {
+        var r = new WhoisResponse(null,
+            "NetRange:       108.192.0.0 - 108.255.255.255\r\n" +
+            "CIDR:           108.192.0.0/10\r\n" +
+            "NetName:        SBCIS-SBIS\r\n" +
+            "Parent:         NET108 (NET-108-0-0-0-0)\r\n" +
+            "OriginAS:       AS7132\r\n" +
+            "Organization:   AT&T Enterprises, LLC (AEL-360)\r\n" +
+            "\r\n" +
+            "OrgName:        AT&T Enterprises, LLC\r\n" +
+            "OrgId:          AEL-360\r\n");
+
+        r.OrganizationName.Is("AT&T Enterprises, LLC");
+        r.AddressRange.IsNotNull();
+        r.AddressRange.Begin.ToString().Is("108.192.0.0");
+        r.AddressRange.End.ToString().Is("108.255.255.255");
+    }
+
     private readonly string ResponseEN1 =
         "% [whois.apnic.net node-2]\r\n" +
         "% Whois data copyright terms    http://www.apnic.net/db/dbcopyright.html\r\n" +
