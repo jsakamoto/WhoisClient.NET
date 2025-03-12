@@ -76,7 +76,7 @@ namespace Whois.NET
             // resolve Address Range.
             var m2 = Regex.Match(this.Raw,
                 @"(^(a\.)?\W*\[IPネットワークアドレス\]\W+(?<adr>[^\r\n]+))|" +
-                @"(^(NetRange|CIDR|inetnum):\W+(?<adr>[^\r\n]+))",
+                @"(^(NetRange|CIDR|inet6?num):\W+(?<adr>[^\r\n]+))",
                 RegexOptions.Multiline);
             if (m2.Success)
             {
