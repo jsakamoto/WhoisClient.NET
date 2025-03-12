@@ -10,7 +10,7 @@ await AsyncVersion();
 static void SyncVersion()
 {
     WriteLine("\n---- Sync version ----");
-    var result = WhoisClient.Query("8.8.8.8");
+    var result = WhoisClient.Query("8.8.8.8", options: default);
 
     WriteLine($"{result.AddressRange.Begin} - {result.AddressRange.End}");
     WriteLine(result.OrganizationName);
@@ -20,7 +20,7 @@ static void SyncVersion()
 static async Task AsyncVersion()
 {
     WriteLine("\n---- Async version ----");
-    var result = await WhoisClient.QueryAsync("8.8.8.8");
+    var result = await WhoisClient.QueryAsync("8.8.8.8", options: default);
 
     WriteLine($"{result.AddressRange.Begin} - {result.AddressRange.End}");
     WriteLine(result.OrganizationName);

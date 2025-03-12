@@ -1,15 +1,15 @@
-v.5.3.0
-- Fixed potential infinite loop in socket reading method
-- Fixed potential response string corruption for registries which use multi-byte encoding
-- Fixed IPv6 address parsing in APNIC response
-
-v.5.2.0
-- Moved TcpClient creation to separate class, enabling usage in special cases like flowing traffic through SOCKS proxy
+v.6.0.0
+- [BREAKING CHANGE] The Default timeout for communication with servers was changed to 2 seconds, and the default retry count was changed to 3 times (Issue #10 by Makaopior)
+- Improved resolving an organization name from a raw response text from a WHOIS server
+- Improved that TcpClient creation is moved to a separate function, enabling usage in special cases like flowing traffic through a SOCKS proxy (PR #9 by Makaopior)
+- Fixed potential infinite loop in socket reading method (Issue #11, PR #9 by Makaopior)
+- Fixed potential response string corruption for registries which use multi-byte encoding (Issue #12, PR #13 by Makaopior)
+- Fixed IPv6 address parsing in APNIC response (PR #14 by Makaopior)
 
 v.5.1.0
-- Added parsing of alternative JPNIC response format (without key letters)
+- Added parsing of alternative JPNIC response format (without key letters) (PR #8 by Makaopior)
+- Added ability to rethrow transport exceptions that've occurred during WHOIS request instead of swallowing them (PR #8 by Makaopior)
 - Fixed tests
-- Added ability to rethrow transport exceptions that've occurred during WHOIS request instead of swallowing them
 
 v.5.0.0
 - Update the target frameworks
