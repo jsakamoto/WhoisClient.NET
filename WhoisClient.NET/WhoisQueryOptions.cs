@@ -31,9 +31,9 @@ namespace Whois.NET
         public int Timeout { get; set; } = 2000;
 
         /// <summary>
-        /// Gets or sets the number of times a connection will be attempted. The default value is 10.
+        /// Gets or sets the number of times a connection will be attempted. The default value is 3.
         /// </summary>
-        public int Retries { get; set; } = 10;
+        public int Retries { get; set; } = 3;
 
         /// <summary>
         /// Gets or sets whether rethrow any caught exceptions instead of swallowing them. The default value is false.

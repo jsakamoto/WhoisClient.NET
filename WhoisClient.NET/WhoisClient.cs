@@ -38,7 +38,7 @@ namespace Whois.NET
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         [Obsolete("Use the 'Query(string query, WhoisQueryOptions options)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static WhoisResponse Query(string query, string server = null, int port = 43,
-            Encoding encoding = null, int timeout = 2000, int retries = 10)
+            Encoding encoding = null, int timeout = 2000, int retries = 3)
         {
             var options = new WhoisQueryOptions();
             options.Server = !string.IsNullOrEmpty(server) ? server : options.Server;
@@ -76,7 +76,7 @@ namespace Whois.NET
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         [Obsolete("Use the 'QueryAsync(string query, WhoisQueryOptions options, CancellationToken token)' instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static async Task<WhoisResponse> QueryAsync(string query, string server = null, int port = 43,
-            Encoding encoding = null, int timeout = 2000, int retries = 10, CancellationToken token = default(CancellationToken))
+            Encoding encoding = null, int timeout = 2000, int retries = 3, CancellationToken token = default(CancellationToken))
         {
             var options = new WhoisQueryOptions();
             options.Server = !string.IsNullOrEmpty(server) ? server : options.Server;
@@ -117,14 +117,14 @@ namespace Whois.NET
             var iteration = 0;
 
             // Continue to connect within the retries number
-            while (string.IsNullOrWhiteSpace(rawResponse) && iteration < options.Retries)
+            while (string.IsNullOrWhiteSpace(rawResponse) && iteration <= options.Retries)
             {
                 try
                 {
                     iteration++;
                     rawResponse = RawQuery(GetQueryStatement(server, query), server, options);
                 }
-                catch (Exception) when (iteration < options.Retries)
+                catch (Exception) when (iteration <= options.Retries)
                 {
                     rawResponse = null;
                 }
@@ -155,14 +155,14 @@ namespace Whois.NET
             var iteration = 0;
 
             // Continue to connect within the retries number
-            while (string.IsNullOrWhiteSpace(rawResponse) && iteration < options.Retries)
+            while (string.IsNullOrWhiteSpace(rawResponse) && iteration <= options.Retries)
             {
                 try
                 {
                     iteration++;
                     rawResponse = await RawQueryAsync(GetQueryStatement(server, query), server, options, token).ConfigureAwait(false);
                 }
-                catch (Exception) when (iteration < options.Retries)
+                catch (Exception) when (iteration <= options.Retries)
                 {
                     rawResponse = null;
                 }

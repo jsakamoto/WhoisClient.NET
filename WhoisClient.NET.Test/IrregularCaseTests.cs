@@ -109,5 +109,58 @@ namespace WhoisClient_NET.Test
             response.Is(string.Empty);
             cts.Token.IsCancellationRequested.IsFalse();
         }
+
+        [Test]
+        public async Task Default_RetryCount_Test()
+        {
+            // Given: a server that disconnects immediately
+            var connectionCount = 0;
+            using var server = new MockServer(async (client, token) =>
+            {
+                connectionCount++;
+                client.Client.Shutdown(SocketShutdown.Send);
+                await Task.Delay(int.MaxValue, token);
+            });
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 10000);
+            var response = await Task.Run(() =>
+                WhoisClient.Query("example.jp", options: new()
+                {
+                    Server = "localhost",
+                    Port = server.Port
+                }), cts.Token);
+
+            // Then: the number of attempts to connect should be 4 ( 1st + 3 retries )
+            connectionCount.Is(4);
+            response.Raw.Is(string.Empty);
+            cts.Token.IsCancellationRequested.IsFalse();
+        }
+
+        [Test]
+        public async Task Default_RetryCount_Async_Test()
+        {
+            // Given: a server that disconnects immediately
+            var connectionCount = 0;
+            using var server = new MockServer(async (client, token) =>
+            {
+                connectionCount++;
+                client.Client.Shutdown(SocketShutdown.Send);
+                await Task.Delay(int.MaxValue, token);
+            });
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 10000);
+            var response = await WhoisClient.QueryAsync("example.jp", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port
+            }, cts.Token);
+
+            // Then: the number of attempts to connect should be 4 ( 1st + 3 retries )
+            connectionCount.Is(4);
+            response.Raw.Is(string.Empty);
+            cts.Token.IsCancellationRequested.IsFalse();
+        }
     }
 }
