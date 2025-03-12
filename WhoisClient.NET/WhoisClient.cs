@@ -59,6 +59,7 @@ namespace Whois.NET
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         public static WhoisResponse Query(string query, WhoisQueryOptions options)
         {
+            options = options ?? new WhoisQueryOptions();
             var servers = new List<EndPoint> { new EndPoint(options.Server, options.Port) };
             return QueryRecursive(query, servers, options);
         }
@@ -98,6 +99,7 @@ namespace Whois.NET
         /// <returns>The strong typed result of query which responded from WHOIS server.</returns>
         public static async Task<WhoisResponse> QueryAsync(string query, WhoisQueryOptions options, CancellationToken token = default(CancellationToken))
         {
+            options = options ?? new WhoisQueryOptions();
             var servers = new List<EndPoint> { new EndPoint(options.Server, options.Port) };
             return await QueryRecursiveAsync(query, servers, options, token).ConfigureAwait(false);
         }
@@ -256,7 +258,7 @@ namespace Whois.NET
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         public static string RawQuery(string query, WhoisQueryOptions options)
         {
-            return RawQuery(query, new EndPoint(options.Server, options.Port), options);
+            return RawQuery(query, new EndPoint(options.Server, options.Port), options ?? new WhoisQueryOptions());
         }
 
         /// <summary>
@@ -374,7 +376,7 @@ namespace Whois.NET
         /// <returns>The raw data decoded by encoding parameter from the WHOIS server that responded, or an empty string if a connection cannot be established.</returns>
         public static async Task<string> RawQueryAsync(string query, WhoisQueryOptions options, CancellationToken token = default(CancellationToken))
         {
-            return await RawQueryAsync(query, new EndPoint(options.Server, options.Port), options, token).ConfigureAwait(false);
+            return await RawQueryAsync(query, new EndPoint(options.Server, options.Port), options ?? new WhoisQueryOptions(), token).ConfigureAwait(false);
         }
 
         /// <summary>

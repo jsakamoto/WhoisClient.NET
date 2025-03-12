@@ -20,7 +20,7 @@ public class DomainTests
     [TestCase(@"facebook.com", @"Meta Platforms, Inc.")]
     public void WhoisClientTest(string domain, string expectedOrgName)
     {
-        var response = WhoisClient.Query(domain, new WhoisQueryOptions());
+        var response = WhoisClient.Query(domain, options: default);
         response.OrganizationName.Is(expectedOrgName);
         response.AddressRange.IsNull();
     }
@@ -29,7 +29,7 @@ public class DomainTests
     [TestCase(@"google.com", @"Google LLC")]
     public async Task WhoisClientAsyncTest(string domain, string expectedOrgName)
     {
-        var response = await WhoisClient.QueryAsync(domain, new WhoisQueryOptions());
+        var response = await WhoisClient.QueryAsync(domain, options: default);
         response.OrganizationName.Is(expectedOrgName);
         response.AddressRange.IsNull();
     }

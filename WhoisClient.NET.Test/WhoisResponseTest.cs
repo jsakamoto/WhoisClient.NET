@@ -330,7 +330,7 @@ public class WhoisResponseTest
     [Test]
     public void RespondedServersTest()
     {
-        var WR = WhoisClient.Query("150.126.0.0", new WhoisQueryOptions());
+        var WR = WhoisClient.Query("150.126.0.0", options: default);
         WR.RespondedServers.Length.Is(3);
     }
 

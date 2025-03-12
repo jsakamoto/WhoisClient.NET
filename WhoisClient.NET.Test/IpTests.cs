@@ -22,7 +22,7 @@ public class IpTests
     [TestCaseSource(nameof(IpTestCases))]
     public void WhoisClientTest(string ip, string expectedOrgName, string expectedAddressRange)
     {
-        var response = WhoisClient.Query(ip, new WhoisQueryOptions());
+        var response = WhoisClient.Query(ip, options: default);
         response.OrganizationName.Is(expectedOrgName);
         response.AddressRange.ToString().Is(expectedAddressRange);
     }
@@ -31,7 +31,7 @@ public class IpTests
     [TestCaseSource(nameof(IpTestCases))]
     public async Task WhoisClientAsyncTest(string ip, string expectedOrgName, string expectedAddressRange)
     {
-        var response = await WhoisClient.QueryAsync(ip, new WhoisQueryOptions());
+        var response = await WhoisClient.QueryAsync(ip, options: default);
         response.OrganizationName.Is(expectedOrgName);
         response.AddressRange.ToString().Is(expectedAddressRange);
     }
