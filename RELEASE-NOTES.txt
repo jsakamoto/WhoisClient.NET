@@ -1,5 +1,5 @@
 v.6.1.0
-- Throw TimeoutException instead of OperationCanceledException when RawQueryAsync method times out
+- Throw TimeoutException instead of OperationCanceledException when RawQueryAsync method times out (PR #15 by Makaopior)
 
 v.6.0.0
 - [BREAKING CHANGE] The Default timeout for communication with servers was changed to 2 seconds, and the default retry count was changed to 3 times (Issue #10 by Makaopior)
