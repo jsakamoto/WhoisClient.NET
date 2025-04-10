@@ -94,13 +94,13 @@ public class IpTests
     [Test]
     public void RawQueryAsync_InvalidWhoisServerSpecified_TransportExceptionRethrown()
     {
-        AsyncTestDelegate action = () => WhoisClient.RawQueryAsync("4.4.4.4", new WhoisQueryOptions
+        var action = () => WhoisClient.RawQueryAsync("4.4.4.4", new WhoisQueryOptions
         {
             Server = "unknown.server.pp",
             RethrowExceptions = true
         });
 
-        Assert.ThrowsAsync<SocketException>(action);
+        Assert.ThrowsAsync<SocketException>(new AsyncTestDelegate(action));
     }
 
     [Test]
@@ -118,13 +118,13 @@ public class IpTests
     [Test]
     public void QueryAsync_With3Retries_InvalidWhoisServerSpecified_TransportExceptionRethrown()
     {
-        AsyncTestDelegate action = () => WhoisClient.QueryAsync("4.4.4.4", new WhoisQueryOptions
+        var action = () => WhoisClient.QueryAsync("4.4.4.4", new WhoisQueryOptions
         {
             Server = "unknown.server.pp",
             Retries = 3,
             RethrowExceptions = true
         });
 
-        Assert.ThrowsAsync<SocketException>(action);
+        Assert.ThrowsAsync<SocketException>(new AsyncTestDelegate(action));
     }
 }
