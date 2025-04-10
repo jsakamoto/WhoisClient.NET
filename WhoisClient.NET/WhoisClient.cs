@@ -472,9 +472,9 @@ namespace Whois.NET
                 {
                     await action(linked.Token);
                 }
-                catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                catch (OperationCanceledException ex) when (!token.IsCancellationRequested)
                 {
-                    throw new TimeoutException("Socket operation timeout");
+                    throw new TimeoutException("Socket operation timeout", ex);
                 }
 #else
                 var mainTask = action(linked.Token);
