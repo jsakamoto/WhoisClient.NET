@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 using System.Text;
 using NUnit.Framework;
 using Whois.NET;
@@ -107,6 +108,49 @@ namespace WhoisClient_NET.Test
 
             // Then: the response should be empty
             response.Is(string.Empty);
+            cts.Token.IsCancellationRequested.IsFalse();
+        }
+
+        [Test]
+        public void Default_Timeout_WithExceptionRethrow_Test()
+        {
+            // Given: a server that never shuts down
+            using var server = new MockServer((client, token) => Task.Delay(int.MaxValue, token));
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 5000);
+            var action = () => Task.Run(() =>
+                WhoisClient.RawQuery("example.jp", options: new()
+                {
+                    Server = "localhost",
+                    Port = server.Port,
+                    RethrowExceptions = true
+                }), cts.Token);
+
+            // Then: IOException should be thrown
+            Assert.ThrowsAsync<IOException>(new AsyncTestDelegate(action));
+
+            cts.Token.IsCancellationRequested.IsFalse();
+        }
+
+        [Test]
+        public void Default_Timeout_WithExceptionRethrow_Async_Test()
+        {
+            // Given: a server that never shuts down
+            using var server = new MockServer((client, token) => Task.Delay(int.MaxValue, token));
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 5000);
+            var action = () => WhoisClient.RawQueryAsync("example.jp", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port,
+                RethrowExceptions = true
+            }, cts.Token);
+
+            // Then: TimeoutException should be thrown
+            Assert.ThrowsAsync<TimeoutException>(new AsyncTestDelegate(action));
+
             cts.Token.IsCancellationRequested.IsFalse();
         }
 

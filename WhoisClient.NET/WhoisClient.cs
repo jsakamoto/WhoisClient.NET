@@ -468,7 +468,14 @@ namespace Whois.NET
             using (var linked = CancellationTokenSource.CreateLinkedTokenSource(token, timeoutCancellation.Token))
             {
 #if NETCOREAPP
-                await action(linked.Token);
+                try
+                {
+                    await action(linked.Token);
+                }
+                catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                {
+                    throw new TimeoutException("Socket operation timeout");
+                }
 #else
                 var mainTask = action(linked.Token);
                 var timeoutTask = Task.Delay(Timeout.Infinite, timeoutCancellation.Token);
@@ -476,7 +483,7 @@ namespace Whois.NET
 
                 var firstCompletedTask = await Task.WhenAny(mainTask, timeoutTask, cancellationTask);
 
-                if (firstCompletedTask == timeoutTask) throw new TimeoutException();
+                if (firstCompletedTask == timeoutTask) throw new TimeoutException("Socket operation timeout");
                 if (firstCompletedTask == cancellationTask) token.ThrowIfCancellationRequested();
 #endif
             }
