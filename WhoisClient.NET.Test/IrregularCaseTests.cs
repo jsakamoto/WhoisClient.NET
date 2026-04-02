@@ -208,7 +208,7 @@ namespace WhoisClient_NET.Test
         }
 
         [Test]
-        public async Task WhoisServer_With_HttpUrl_Should_Not_Follow_As_Referral_Test()
+        public async Task WhoisServer_With_HttpsUrl_Should_Not_Follow_As_Referral_Test()
         {
             // Given: a server that returns a response with an HTTPS URL in the "Registrar WHOIS Server" field
             var whoisResponse =
