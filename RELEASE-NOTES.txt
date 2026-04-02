@@ -1,3 +1,6 @@
+v.6.1.1
+- Fix: Fixed empty response for .ORG domains caused by HTTP/HTTPS URLs being incorrectly treated as WHOIS server referrals
+
 v.6.1.0
 - Throw TimeoutException instead of OperationCanceledException when RawQueryAsync method times out (PR #15 by Makaopior)
 

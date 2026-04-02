@@ -9,13 +9,15 @@
     <AssemblyName>WhoisClient</AssemblyName>
     <Product>WhoisClient.NET</Product>
     <Authors>J.Sakamoto, Keith J. Jones, Martijn Storck, Makaopior</Authors>
-    <Version>6.1.0</Version>
-    <Copyright>Copyright 2012-2025 J.Sakamoto; 2016 Keith J. Jones; 2023 Martijn Storck; 2025 Makaopior; Ms-PL License.</Copyright>
+    <Version>6.1.1</Version>
+    <Copyright>Copyright 2012-2026 J.Sakamoto; 2016 Keith J. Jones; 2023 Martijn Storck; 2025 Makaopior; Ms-PL License.</Copyright>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/jsakamoto/WhoisClient.NET/</PackageProjectUrl>
-    <Description>This library is a WHOIS protocol client used to search owner information by IP address or domain name.
-This library determines the WHOIS server automatically and queries the referral server recursively.
-The response of the whois query contains strongly typed values, and the raw output.</Description>
+    <Description>
+      This library is a WHOIS protocol client used to search owner information by IP address or domain name.
+      This library determines the WHOIS server automatically and queries the referral server recursively.
+      The response of the whois query contains strongly typed values, and the raw output.
+    </Description>
     <PackageReleaseNotes>(Please write the package release notes in "../RELEASE-NOTES.txt")</PackageReleaseNotes>
     <PackageTags>whois</PackageTags>
     <PackageId>WhoisClient.NET</PackageId>
@@ -40,8 +42,7 @@ The response of the whois query contains strongly typed values, and the raw outp
     <PropertyGroup>
       <PackageReleaseNotes>@(ReleaseNoteLines, '%0a');v.0.0</PackageReleaseNotes>
       <PackageReleaseNotes>$([System.Text.RegularExpressions.Regex]::Match($(PackageReleaseNotes), "^(v\.[\d\.]+.+?)v\.[\d\.]+", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value)</PackageReleaseNotes>
-      <PackageReleaseNotes>
-        $(PackageReleaseNotes)%0a%0aTo see all the change logs, please visit the following URL.%0a- https://github.com/jsakamoto/WhoisClient.NET/blob/master/RELEASE-NOTES.txt</PackageReleaseNotes>
+      <PackageReleaseNotes>$(PackageReleaseNotes)%0a%0aTo see all the change logs, please visit the following URL.%0a- https://github.com/jsakamoto/WhoisClient.NET/blob/master/RELEASE-NOTES.txt</PackageReleaseNotes>
     </PropertyGroup>
   </Target>
 
