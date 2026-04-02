@@ -206,5 +206,77 @@ namespace WhoisClient_NET.Test
             response.Raw.Is(string.Empty);
             cts.Token.IsCancellationRequested.IsFalse();
         }
+
+        [Test]
+        public async Task WhoisServer_With_HttpUrl_Should_Not_Follow_As_Referral_Test()
+        {
+            // Given: a server that returns a response with an HTTPS URL in the "Registrar WHOIS Server" field
+            var whoisResponse =
+                "Domain Name: EXAMPLE.ORG\r\n" +
+                "Registry Domain ID: 123456789_DOMAIN_ORG-VRSN\r\n" +
+                "Registrar WHOIS Server: https://rdap.example.org/\r\n" +
+                "Registrar URL: http://www.example.org\r\n" +
+                "Registrant Organization: Example Org\r\n" +
+                "Registrar: Example Registrar, Inc.\r\n";
+            using var server = new MockServer(async (client, token) =>
+            {
+                await Task.Delay(200, token);
+                var responseBytes = Encoding.ASCII.GetBytes(whoisResponse);
+                client.Client.Send(responseBytes);
+                await Task.Delay(100, token);
+                client.Client.Shutdown(SocketShutdown.Send);
+                await Task.Delay(int.MaxValue, token);
+            });
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 10000);
+            var response = await WhoisClient.QueryAsync("example.org", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port,
+                Retries = 0,
+                RethrowExceptions = true
+            }, cts.Token);
+
+            // Then: the response should contain the WHOIS data, not be empty
+            // (Previously, "https" would be extracted as a referral server, causing the response to be lost)
+            response.Raw.Is(whoisResponse);
+            response.RespondedServers.Length.Is(1);
+            response.RespondedServers[0].Is("localhost");
+        }
+
+        [Test]
+        public async Task WhoisServer_With_HttpUrl_Should_Not_Follow_As_Referral_Http_Test()
+        {
+            // Given: a server that returns a response with an HTTP URL in the "Registrar WHOIS Server" field
+            var whoisResponse =
+                "Domain Name: EXAMPLE.ORG\r\n" +
+                "Registrar WHOIS Server: http://whois.registrar.example.com\r\n" +
+                "Registrant Organization: Example Org\r\n";
+            using var server = new MockServer(async (client, token) =>
+            {
+                await Task.Delay(200, token);
+                var responseBytes = Encoding.ASCII.GetBytes(whoisResponse);
+                client.Client.Send(responseBytes);
+                await Task.Delay(100, token);
+                client.Client.Shutdown(SocketShutdown.Send);
+                await Task.Delay(int.MaxValue, token);
+            });
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 10000);
+            var response = await WhoisClient.QueryAsync("example.org", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port,
+                Retries = 0,
+                RethrowExceptions = true
+            }, cts.Token);
+
+            // Then: HTTP URLs should not be treated as WHOIS server referrals
+            response.Raw.Is(whoisResponse);
+            response.RespondedServers.Length.Is(1);
+            response.RespondedServers[0].Is("localhost");
+        }
     }
 }

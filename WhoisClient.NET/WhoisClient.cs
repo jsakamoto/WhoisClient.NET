@@ -20,9 +20,9 @@ namespace Whois.NET
         /// </summary>
         private static readonly Regex _hasReferralRegex = new Regex(
                 @"(^ReferralServer:\W+whois://(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
-                @"(^\s*(Registrar\s+)?Whois Server:\s*(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
-                @"(^\s*refer:\s*(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
-                @"(^\s*whois:\s*(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
+                @"(^\s*(Registrar\s+)?Whois Server:(?>\s*)(?!https?://)(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
+                @"(^\s*refer:(?>\s*)(?!https?://)(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
+                @"(^\s*whois:(?>\s*)(?!https?://)(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
                 @"(^remarks:\W+.*(?<refsvr>whois\.[0-9a-z\-\.]+\.[a-z]{2,})(:(?<port>\d+))?)",
                 RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
@@ -199,7 +199,7 @@ namespace Whois.NET
             var m2 = _hasReferralRegex.Match(rawResponse);
             if (!m2.Success) return false;
 
-            refServerHost = m2.Groups[@"refsvr"].Value;
+            refServerHost = m2.Groups[@"refsvr"].Value.Trim();
             refServerPort = m2.Groups["port"].Success ? int.Parse(m2.Groups["port"].Value) : refServerPort;
             if (currentServer.Host.ToLower() == refServerHost.ToLower()) return false;
 
