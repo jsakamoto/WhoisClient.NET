@@ -5,18 +5,18 @@ on:
     branches:
       - master
 jobs:
-  deploy:
+  perform-unit-tests:
     runs-on: ubuntu-latest
     steps:
       # Checkout the code
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Install .NET SDK
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
-           dotnet-version: '9.0.x'
+           dotnet-version: '10.0.x'
 
       # Perform unit tests
       - name: Perform unit tests
-        run: dotnet run --project WhoisClient.NET.Test -v:q -f net9.0
+        run: dotnet test --project WhoisClient.NET.Test -f net10.0 --output detailed

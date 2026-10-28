@@ -62,13 +62,14 @@ private async void QueryByDomain()
 
 ## Supported Framework
 
-WhoisClient.NET version | Supported Framework
-------------------------|--------------------
-5.x                     | .NET 5, 6, 7, 8, 9 or later, .NET Standard 2.0 (including .NET Core 2.0 or later, .NET Framework 4.6.2 or later)
-4.x                     | .NET 5, 6, 7, 8, 9 or later, .NET Standard 2.0 (including .NET Core 2.0 or later, .NET Framework 4.6.2 or later)
-3.x                     | .NET Standard 1.4 (including .NET Core 1.1 or later, .NET Framework 4.5 or later)
-2.x                     | .NET Framework 4.0 or later
-1.x                     | .NET Framework 4.0 or later
+| WhoisClient.NET version | Supported Framework                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| 6.x                     | .NET 5.0 ~ 10.0 or later, .NET Standard 2.0 (.NET Core 2.0 ~ 3.1, .NET Framework 4.6.2 or later) |
+| 5.x                     | .NET 5.0 ~ 9.0 or later, .NET Standard 2.0 (.NET Core 2.0 ~ 3.1, .NET Framework 4.6.2 or later)  |
+| 4.x                     | .NET 5.0 ~ 9.0 or later, .NET Standard 2.0 (.NET Core 2.0 ~ 3.1, .NET Framework 4.6.2 or later)  |
+| 3.x                     | .NET Standard 1.4 (.NET Core 1.1 or later, .NET Framework 4.5 or later)                          |
+| 2.x                     | .NET Framework 4.0 or later                                                                      |
+| 1.x                     | .NET Framework 4.0 or later                                                                      |
 
 **NOTICE** 
 
