@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/README/">
+    <File Path="License.md" />
+    <File Path="Readme.md" />
+    <File Path="RELEASE-NOTES.txt" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".github/workflows/unit-tests.yml" />
+  </Folder>
+  <Project Path="WhoisClient.NET.Test/WhoisClient.NET.Test.csproj" />
+  <Project Path="WhoisClient.NET/WhoisClient.NET.csproj" />
+</Solution>
