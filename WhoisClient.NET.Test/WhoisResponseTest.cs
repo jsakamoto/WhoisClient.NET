@@ -330,8 +330,9 @@ public class WhoisResponseTest
     [Test]
     public void RespondedServersTest()
     {
-        var WR = WhoisClient.Query("150.126.0.0", options: default);
-        WR.RespondedServers.Length.Is(3);
+        // APNIC refers to TWNIC only via a "remarks:" line, whose 3-letter TLD (.net) must be captured in full.
+        var WR = WhoisClient.Query("1.160.0.0", options: default);
+        WR.RespondedServers.Is("whois.iana.org", "whois.apnic.net", "whois.twnic.net");
     }
 
     [Test]

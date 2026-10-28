@@ -46,7 +46,7 @@ All logic lives in two files under `WhoisClient.NET/`.
 
 - `WhoisResponseTest`: offline parsing tests against canned raw responses. Add a case here when changing `WhoisResponse` parsing.
 - `IrregularCaseTests`: offline tests using `Internals/MockServer` (a loopback `TcpListener` with a per-client handler) for timeouts, retries, encoding, and referral-regex edge cases. Use this pattern for referral/transport bugs.
-- `IpTests` / `DomainTests`: hit real WHOIS servers over the network. They can fail due to rate limiting (e.g. MarkMonitor) or upstream data changes, not only code regressions.
+- `IpTests`, `DomainTests`, and `WhoisResponseTest.RespondedServersTest` hit real WHOIS servers over the network. They can fail due to rate limiting (e.g. MarkMonitor) or upstream data changes (registrant data redacted, a registry dropping a referral line), not only code regressions. When one breaks, query the servers directly to confirm the cause, then pick new test data that still exercises the same code path the test was written for (check `git log -S` for its origin) rather than loosening the assertion.
 
 ## Conventions
 

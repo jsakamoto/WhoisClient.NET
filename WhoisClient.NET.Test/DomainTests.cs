@@ -26,7 +26,7 @@ public class DomainTests
     }
 
     [Test]
-    [TestCase(@"google.com", @"Google LLC")]
+    [TestCase(@"microsoft.com", @"Microsoft Corporation")]
     public async Task WhoisClientAsyncTest(string domain, string expectedOrgName)
     {
         var response = await WhoisClient.QueryAsync(domain, options: default);
