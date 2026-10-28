@@ -1,3 +1,7 @@
+v.6.1.2
+- Improve: Added .NET 10 as a target framework.
+- Fix: Fixed empty responses for domains whose IANA record has an empty WHOIS server field, such as .DIGITAL domains (Issue #18).
+
 v.6.1.1
 - Fix: Fixed empty response for .ORG domains caused by HTTP/HTTPS URLs being incorrectly treated as WHOIS server referrals
 
