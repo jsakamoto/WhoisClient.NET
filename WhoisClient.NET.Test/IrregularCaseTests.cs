@@ -128,7 +128,7 @@ namespace WhoisClient_NET.Test
                 }), cts.Token);
 
             // Then: IOException should be thrown
-            Assert.ThrowsAsync<IOException>(new AsyncTestDelegate(action));
+            Assert.ThrowsAsync<IOException>(action);
 
             cts.Token.IsCancellationRequested.IsFalse();
         }
@@ -149,7 +149,7 @@ namespace WhoisClient_NET.Test
             }, cts.Token);
 
             // Then: TimeoutException should be thrown
-            Assert.ThrowsAsync<TimeoutException>(new AsyncTestDelegate(action));
+            Assert.ThrowsAsync<TimeoutException>(action);
 
             cts.Token.IsCancellationRequested.IsFalse();
         }
