@@ -278,5 +278,83 @@ namespace WhoisClient_NET.Test
             response.RespondedServers.Length.Is(1);
             response.RespondedServers[0].Is("localhost");
         }
+
+        [Test]
+        public async Task Empty_Refer_Should_Not_Follow_Next_Line_As_Referral_Test()
+        {
+            // Given: a server that returns a response with empty "refer:" and "whois:" fields, like IANA does for the .DIGITAL TLD
+            var whoisResponse =
+                "% IANA WHOIS server\n" +
+                "% for more information on IANA, visit http://www.iana.org\n" +
+                "% This query returned 1 object\n" +
+                "\n" +
+                "refer:        \n" +
+                "\n" +
+                "domain:       DIGITAL\n" +
+                "\n" +
+                "organisation: Binky Moon, LLC\n" +
+                "\n" +
+                "whois:        \n" +
+                "\n" +
+                "status:       ACTIVE\n";
+            using var server = new MockServer(async (client, token) =>
+            {
+                await Task.Delay(200, token);
+                client.Client.Send(Encoding.ASCII.GetBytes(whoisResponse));
+                await Task.Delay(100, token);
+                client.Client.Shutdown(SocketShutdown.Send);
+                await Task.Delay(int.MaxValue, token);
+            });
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 10000);
+            var response = await WhoisClient.QueryAsync("example.digital", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port,
+                Retries = 0,
+                RethrowExceptions = true
+            }, cts.Token);
+
+            // Then: the response should contain the WHOIS data, not be empty
+            // (Previously, "domain" on the next line would be extracted as a referral server, causing the response to be lost)
+            response.Raw.Is(whoisResponse);
+            response.RespondedServers.Length.Is(1);
+            response.RespondedServers[0].Is("localhost");
+        }
+
+        [Test]
+        public async Task Empty_WhoisServer_Should_Not_Follow_Next_Line_As_Referral_Test()
+        {
+            // Given: a server that returns a response with an empty "Registrar WHOIS Server" field
+            var whoisResponse =
+                "Domain Name: EXAMPLE.DIGITAL\r\n" +
+                "Registrar WHOIS Server: \r\n" +
+                "Registrar URL: http://www.example.com\r\n" +
+                "Registrant Organization: Example Org\r\n";
+            using var server = new MockServer(async (client, token) =>
+            {
+                await Task.Delay(200, token);
+                client.Client.Send(Encoding.ASCII.GetBytes(whoisResponse));
+                await Task.Delay(100, token);
+                client.Client.Shutdown(SocketShutdown.Send);
+                await Task.Delay(int.MaxValue, token);
+            });
+
+            // When: a query is made to the server
+            using var cts = new CancellationTokenSource(millisecondsDelay: 10000);
+            var response = await Task.Run(() => WhoisClient.Query("example.digital", options: new()
+            {
+                Server = "localhost",
+                Port = server.Port,
+                Retries = 0,
+                RethrowExceptions = true
+            }), cts.Token);
+
+            // Then: the response should contain the WHOIS data, not be empty
+            response.Raw.Is(whoisResponse);
+            response.RespondedServers.Length.Is(1);
+            response.RespondedServers[0].Is("localhost");
+        }
     }
 }
