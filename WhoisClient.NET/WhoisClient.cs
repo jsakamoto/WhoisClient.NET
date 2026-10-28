@@ -20,9 +20,9 @@ namespace Whois.NET
         /// </summary>
         private static readonly Regex _hasReferralRegex = new Regex(
                 @"(^ReferralServer:\W+whois://(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
-                @"(^\s*(Registrar\s+)?Whois Server:(?>\s*)(?!https?://)(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
-                @"(^\s*refer:(?>\s*)(?!https?://)(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
-                @"(^\s*whois:(?>\s*)(?!https?://)(?<refsvr>[^:\r\n]+)(:(?<port>\d+))?)|" +
+                @"(^\s*(Registrar\s+)?Whois Server:(?>[ \t]*)(?!https?://)(?<refsvr>[^:\s]+)(:(?<port>\d+))?)|" +
+                @"(^\s*refer:(?>[ \t]*)(?!https?://)(?<refsvr>[^:\s]+)(:(?<port>\d+))?)|" +
+                @"(^\s*whois:(?>[ \t]*)(?!https?://)(?<refsvr>[^:\s]+)(:(?<port>\d+))?)|" +
                 @"(^remarks:\W+.*(?<refsvr>whois\.[0-9a-z\-\.]+\.[a-z]{2,})(:(?<port>\d+))?)",
                 RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
